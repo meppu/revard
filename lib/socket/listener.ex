@@ -1,4 +1,4 @@
-defmodule Rebard.Socket.Listener do
+defmodule Revard.Socket.Listener do
   @behaviour :cowboy_websocket
 
   defstruct [:ids, :last_ping]
@@ -18,7 +18,7 @@ defmodule Rebard.Socket.Listener do
     end
   end
 
-  def websocket_info({:message, message}, state), do: {:reply, message, state}
+  def websocket_info({:message, message}, state), do: {:reply, {:text, message}, state}
   def websocket_info(:close, state), do: {:close, state}
 
   # ping
