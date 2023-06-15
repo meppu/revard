@@ -21,6 +21,12 @@ defmodule Revard.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [{:websockex, "~> 0.4.3"}, {:jason, "~> 1.4"}]
+    [
+      {:websockex, "~> 0.4.3"},
+      {:jason, "~> 1.4"},
+      {:cowboy, "~> 2.10"},
+      {:plug, "~> 1.14"},
+      {:plug_cowboy, "~> 2.6"}
+    ]
   end
 end
