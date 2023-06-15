@@ -16,7 +16,8 @@ defmodule Revard do
           port: 8000
         ]
       ),
-      {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)}
+      {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
+      Revard.Collector.Ping
     ]
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]
