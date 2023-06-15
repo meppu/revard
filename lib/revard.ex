@@ -8,7 +8,7 @@ defmodule Revard do
         keys: :unique,
         name: Bucket.Consumers
       ),
-      {Revard.Bot.Listener, "wss://ws.revolt.chat"}
+      {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)}
     ]
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]
