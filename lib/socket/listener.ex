@@ -7,6 +7,11 @@ defmodule Revard.Socket.Listener do
 
   def websocket_init(_state), do: {:ok, create_id()}
 
+  def websocket_handle({:ping, message}, state) do
+    update_ping(state)
+    {:reply, {:pong, message}, state}
+  end
+
   def websocket_handle({:text, message}, state) do
     case Jason.decode(message) do
       {:ok, decoded} when is_map(decoded) ->
@@ -17,6 +22,8 @@ defmodule Revard.Socket.Listener do
         {:reply, {:close, 1002, "invalid_payload"}, state}
     end
   end
+
+  def websocket_handle(_message, state), do: {:ok, state}
 
   def websocket_info({:message, message}, state), do: {:reply, {:text, message}, state}
   def websocket_info(:close, state), do: {:reply, {:close, 1012, "inactive_connection"}, state}
