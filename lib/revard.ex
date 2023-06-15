@@ -1,18 +1,17 @@
 defmodule Revard do
-  @moduledoc """
-  Documentation for `Revard`.
-  """
+  use Application
+  require Logger
 
-  @doc """
-  Hello world.
+  def start(_type, _args) do
+    children = [
+      Registry.child_spec(
+        keys: :unique,
+        name: Bucket.Consumers
+      ),
+      {Revard.Bot.Listener, "wss://ws.revolt.chat"}
+    ]
 
-  ## Examples
-
-      iex> Revard.hello()
-      :world
-
-  """
-  def hello do
-    :world
+    opts = [strategy: :one_for_one, name: Revard.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 end
