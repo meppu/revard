@@ -4,6 +4,7 @@ defmodule Revard do
 
   def start(_type, _args) do
     mongo_url = Application.get_env(:revard, :mongo_url)
+    {port_to_listen, ""} = Integer.parse(Application.get_env(:revard, :port))
 
     children = [
       Plug.Cowboy.child_spec(
@@ -11,7 +12,7 @@ defmodule Revard do
         plug: Revard.Router,
         options: [
           dispatch: dispatch(),
-          port: 8000
+          port: port_to_listen
         ]
       ),
       Registry.child_spec(keys: :unique, name: Bucket.Consumers),
@@ -32,6 +33,8 @@ defmodule Revard do
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
       Revard.Task.Ping
     ]
+
+    Logger.info("Starting server on port: #{port_to_listen}")
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]
     Supervisor.start_link(children, opts)
