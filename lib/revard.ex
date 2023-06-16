@@ -4,10 +4,6 @@ defmodule Revard do
 
   def start(_type, _args) do
     children = [
-      Registry.child_spec(
-        keys: :unique,
-        name: Bucket.Consumers
-      ),
       Plug.Cowboy.child_spec(
         scheme: :http,
         plug: Revard.Router,
@@ -16,8 +12,10 @@ defmodule Revard do
           port: 8000
         ]
       ),
+      Registry.child_spec(keys: :unique, name: Bucket.Consumers),
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
-      Revard.Collector.Ping,
+      Revard.Task.Ping,
+      Revard.Task.Snapshot,
       Revard.Cache.Users
     ]
 

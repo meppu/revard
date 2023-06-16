@@ -27,3 +27,6 @@ revard-*.tar
 
 # Elixir LS
 /.elixir_ls/
+
+# Test Snapshot
+snapshot.json

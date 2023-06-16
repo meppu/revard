@@ -29,17 +29,23 @@ defmodule Revard.Cache.Users do
 
   @impl true
   def init(_args) do
-    case Revard.Bot.Rest.members() do
-      {:ok, users} ->
-        cache =
-          users
-          |> Enum.map(fn data -> {data["_id"], data} end)
-          |> Map.new()
-
-        {:ok, cache}
+    case File.read("snapshot.json") do
+      {:ok, snapshot} ->
+        {:ok, Jason.decode!(snapshot)}
 
       _ ->
-        {:stop, :fetch_error}
+        case Revard.Bot.Rest.members() do
+          {:ok, users} ->
+            cache =
+              users
+              |> Enum.map(fn data -> {data["_id"], data} end)
+              |> Map.new()
+
+            {:ok, cache}
+
+          _ ->
+            {:stop, :fetch_error}
+        end
     end
   end
 

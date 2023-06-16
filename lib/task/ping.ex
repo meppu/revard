@@ -1,4 +1,4 @@
-defmodule Revard.Collector.Ping do
+defmodule Revard.Task.Ping do
   use GenServer
 
   def child_spec([]) do
