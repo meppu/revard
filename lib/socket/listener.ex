@@ -3,7 +3,12 @@ defmodule Revard.Socket.Listener do
 
   defstruct [:ids, :last_ping]
 
-  def init(request, _state), do: {:cowboy_websocket, request, nil}
+  def init(request, _state),
+    do:
+      {:cowboy_websocket, request, nil,
+       %{
+         max_frame_size: 8192
+       }}
 
   def websocket_init(_state), do: {:ok, create_id()}
 
