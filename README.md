@@ -10,7 +10,7 @@ Revard is a basic [Lanyard](https://github.com/Phineas/lanyard) implementation f
 
 Revard allows you to expose your Revolt activities throught WebSocket easily.
 
-An instance is currently running at `revard.meppu.boo`, You must join [this server](https://rvlt.gg/JDkjhpAG) before using it.
+An instance is currently running at `revard.meppu.boo`, You must join [this server](https://rvlt.gg/FVE16VCd) before using it.
 
 ## REST API
 
