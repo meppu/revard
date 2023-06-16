@@ -15,7 +15,7 @@
           inherit inputs pkgs;
 
           default = pkgs.mkShell {
-            packages = with pkgs; [ elixir ];
+            packages = with pkgs; [ elixir gigalixir ];
           };
         });
     };
