@@ -6,4 +6,4 @@ config :revard,
   revolt_api: System.get_env("REVOLT_API", "https://api.revolt.chat"),
   server_id: System.get_env("REVOLT_SERVER_ID"),
   mongo_url: System.get_env("MONGO_URL"),
-  port: System.get_env("PORT")
+  port: System.get_env("PORT", "8000")

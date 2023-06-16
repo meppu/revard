@@ -62,6 +62,32 @@ Now you will receive updates for users in `ids`. If you want to watch whole serv
 
 To update subscribers, just send same thing again with updated `ids` value.
 
+## Self-hosting
+
+If you don't want to join our server, or make it special for your own server, you can host it yourself.
+
+### Environment variables
+
+You must set some environment variables before running the bot:
+
+- `BOT_TOKEN`: Your bot's token, self-bots are not supported right now.
+- `REVOLT_SERVER_ID`: Server ID to watch. Please keep your bot in only one server to avoid conflicts.
+- `MONGO_URL`: MongoDB url, must support SSL.
+- `PORT`: Port to listen, fallbacks to 8000 if not given.
+
+And some special environment variables if you use this bot for another Revolt host:
+
+- `REVOLT_WEBSOCKET`: Revolt websocket url, default is "wss://ws.revolt.chat".
+- `REVOLT_API`: Revolt API url, default is "https://api.revolt.chat".
+
+### Docker
+
+You can use Docker to host your own bot, for example:
+
+```bash
+$ docker run --env-file=.env ghcr.io/meppu/revard:latest start
+```
+
 ## Contributing
 
 You can always report bugs and request features via [GitHub Issues](/issues).
