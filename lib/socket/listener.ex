@@ -35,11 +35,19 @@ defmodule Revard.Socket.Listener do
   defp match_message(%{"event" => "subscribe", "ids" => ids}, state) when is_list(ids) do
     if Enum.all?(ids, &is_binary/1) do
       Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: ids})
-      {:ok, state}
+
+      initial_message =
+        ids
+        |> Revard.Cache.Users.get()
+        |> Jason.encode!()
+
+      {:reply, {:text, initial_message}, state}
     else
       {:reply, {:close, 1002, "invalid_payload"}, state}
     end
   end
+
+  ### Internal
 
   defp update_ping(id) do
     Registry.update_value(Bucket.Consumers, id, &%{&1 | last_ping: DateTime.utc_now()})

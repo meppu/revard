@@ -17,7 +17,8 @@ defmodule Revard do
         ]
       ),
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
-      Revard.Collector.Ping
+      Revard.Collector.Ping,
+      Revard.Cache.Users
     ]
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]

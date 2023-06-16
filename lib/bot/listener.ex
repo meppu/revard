@@ -11,9 +11,26 @@ defmodule Revard.Bot.Listener do
   def handle_frame({:text, message}, state) do
     message = Jason.decode!(message)
 
-    if message["type"] == "UserUpdate" do
-      %{id: message["id"], data: message["data"]}
-      |> distribute_message()
+    case message["type"] do
+      "UserUpdate" ->
+        data = %{id: message["id"], data: message["data"], clear: message["clear"]}
+
+        Revard.Cache.Users.patch(data.id, data.data, data.clear)
+        distribute_message(data)
+
+      "ServerMemberLeave" ->
+        Revard.Cache.Users.remove(message["user"])
+
+      "ServerMemberJoin" ->
+        message["user"]
+        |> Revard.Bot.Rest.user()
+        |> case do
+          {:ok, data} -> Revard.Cache.Users.insert(data)
+          _ -> :noop
+        end
+
+      _ ->
+        :noop
     end
 
     {:ok, state}

@@ -26,7 +26,8 @@ defmodule Revard.MixProject do
       {:jason, "~> 1.4"},
       {:cowboy, "~> 2.10"},
       {:plug, "~> 1.14"},
-      {:plug_cowboy, "~> 2.6"}
+      {:plug_cowboy, "~> 2.6"},
+      {:httpoison, "~> 2.1"}
     ]
   end
 end
