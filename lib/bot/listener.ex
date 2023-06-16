@@ -1,6 +1,8 @@
 defmodule Revard.Bot.Listener do
   use WebSockex
 
+  alias Revard.Storage
+
   def start_link(host) do
     token = Application.get_env(:revard, :bot_token)
 
@@ -12,20 +14,27 @@ defmodule Revard.Bot.Listener do
     message = Jason.decode!(message)
 
     case message["type"] do
+      "Ready" ->
+        case Revard.Bot.Rest.members() do
+          {:ok, users} -> Storage.Users.insert(users)
+          # TODO: Log error
+          _ -> :noop
+        end
+
       "UserUpdate" ->
         data = %{id: message["id"], data: message["data"], clear: message["clear"]}
 
-        Revard.Cache.Users.patch(data.id, data.data, data.clear)
+        Storage.Users.patch(data.id, data.data, data.clear)
         distribute_message(data)
 
       "ServerMemberLeave" ->
-        Revard.Cache.Users.remove(message["user"])
+        Storage.Users.remove(message["user"])
 
       "ServerMemberJoin" ->
         message["user"]
         |> Revard.Bot.Rest.user()
         |> case do
-          {:ok, data} -> Revard.Cache.Users.insert(data)
+          {:ok, data} -> Storage.Users.insert(data)
           _ -> :noop
         end
 

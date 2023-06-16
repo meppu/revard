@@ -13,10 +13,9 @@ defmodule Revard do
         ]
       ),
       Registry.child_spec(keys: :unique, name: Bucket.Consumers),
+      {Mongo, [name: :mongo, url: Application.get_env(:revard, :mongo_url)]},
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
-      Revard.Task.Ping,
-      Revard.Task.Snapshot,
-      Revard.Cache.Users
+      Revard.Task.Ping
     ]
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]

@@ -42,7 +42,7 @@ defmodule Revard.Socket.Listener do
       Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: ids})
 
       initial_message =
-        %{type: "init", data: Revard.Cache.Users.get(ids)}
+        %{type: "init", data: Revard.Storage.Users.get(ids)}
         |> Jason.encode!()
 
       {:reply, {:text, initial_message}, state}

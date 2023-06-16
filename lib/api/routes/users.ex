@@ -1,6 +1,6 @@
 defmodule Revard.API.Routes.Users do
   alias Revard.API.Utils
-  alias Revard.Cache
+  alias Revard.Storage
 
   use Plug.Router
 
@@ -12,7 +12,7 @@ defmodule Revard.API.Routes.Users do
 
     response =
       user_id
-      |> Cache.Users.get()
+      |> Storage.Users.get()
       |> List.first()
 
     if response == nil do
