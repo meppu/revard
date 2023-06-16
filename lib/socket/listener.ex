@@ -1,6 +1,8 @@
 defmodule Revard.Socket.Listener do
   @behaviour :cowboy_websocket
 
+  require Logger
+
   defstruct [:ids, :last_ping]
 
   def init(request, _state),
@@ -13,6 +15,8 @@ defmodule Revard.Socket.Listener do
   def websocket_init(_state), do: {:ok, create_id()}
 
   def websocket_handle({:ping, _message}, state) do
+    Logger.debug("Handled ping (socket)")
+
     update_ping(state)
     {:reply, {:pong, ":)"}, state}
   end
@@ -38,6 +42,8 @@ defmodule Revard.Socket.Listener do
   defp match_message(%{"event" => "ping"}, state), do: {:ok, state}
 
   defp match_message(%{"event" => "subscribe", "ids" => ids}, state) when is_list(ids) do
+    Logger.debug("Connection #{state} subscribed to following id(s): #{inspect(ids)} (socket)")
+
     if Enum.all?(ids, &is_binary/1) do
       Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: ids})
 
@@ -61,6 +67,7 @@ defmodule Revard.Socket.Listener do
   ### Internal
 
   defp update_ping(id) do
+    Logger.debug("Connection pinged: #{id} (socket)")
     Registry.update_value(Bucket.Consumers, id, &%{&1 | last_ping: DateTime.utc_now()})
   end
 
@@ -73,6 +80,7 @@ defmodule Revard.Socket.Listener do
         create_id()
 
       {:ok, _} ->
+        Logger.debug("New connection: #{id} (socket)")
         id
     end
   end

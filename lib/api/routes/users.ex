@@ -4,11 +4,15 @@ defmodule Revard.API.Routes.Users do
 
   use Plug.Router
 
+  require Logger
+
   plug(:match)
   plug(:dispatch)
 
   get "/:id" do
     %Plug.Conn{params: %{"id" => user_id}} = conn
+
+    Logger.debug("Getting #{user_id}'s information (http)")
 
     response =
       user_id

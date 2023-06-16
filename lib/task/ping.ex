@@ -15,7 +15,7 @@ defmodule Revard.Task.Ping do
 
   @impl true
   def init(_args) do
-    :timer.send_interval(60000, :tick)
+    :timer.send_interval(30000, :tick)
   end
 
   @impl true
@@ -23,7 +23,7 @@ defmodule Revard.Task.Ping do
     Bucket.Consumers
     |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
     |> Enum.filter(fn {_, data} ->
-      DateTime.diff(DateTime.utc_now(), data.last_ping) > 60
+      DateTime.diff(DateTime.utc_now(), data.last_ping) > 30
     end)
     |> Enum.map(fn {pid, _} ->
       send(pid, :close)

@@ -3,6 +3,8 @@ defmodule Revard.Bot.Listener do
 
   alias Revard.Storage
 
+  require Logger
+
   def start_link(host) do
     token = Application.get_env(:revard, :bot_token)
 
@@ -16,9 +18,11 @@ defmodule Revard.Bot.Listener do
     case message["type"] do
       "Ready" ->
         case Revard.Bot.Rest.members() do
-          {:ok, users} -> Storage.Users.insert(users)
-          # TODO: Log error
-          _ -> :noop
+          {:ok, users} ->
+            Storage.Users.insert(users)
+
+          _ ->
+            Logger.emergency("Failed to fetch server members")
         end
 
       "UserUpdate" ->
@@ -34,8 +38,11 @@ defmodule Revard.Bot.Listener do
         message["user"]
         |> Revard.Bot.Rest.user()
         |> case do
-          {:ok, data} -> Storage.Users.insert(data)
-          _ -> :noop
+          {:ok, data} ->
+            Storage.Users.insert(data)
+
+          _ ->
+            Logger.error("Failed to fetch user information")
         end
 
       _ ->
