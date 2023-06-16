@@ -12,9 +12,9 @@ defmodule Revard.Socket.Listener do
 
   def websocket_init(_state), do: {:ok, create_id()}
 
-  def websocket_handle({:ping, message}, state) do
+  def websocket_handle({:ping, _message}, state) do
     update_ping(state)
-    {:reply, {:pong, message}, state}
+    {:reply, {:pong, ":)"}, state}
   end
 
   def websocket_handle({:text, message}, state) do
@@ -35,10 +35,8 @@ defmodule Revard.Socket.Listener do
 
   def websocket_info(:close, state), do: {:reply, {:close, 1012, "inactive_connection"}, state}
 
-  # ping
   defp match_message(%{"event" => "ping"}, state), do: {:ok, state}
 
-  # subscribe
   defp match_message(%{"event" => "subscribe", "ids" => ids}, state) when is_list(ids) do
     if Enum.all?(ids, &is_binary/1) do
       Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: ids})
@@ -52,6 +50,13 @@ defmodule Revard.Socket.Listener do
       {:reply, {:close, 1002, "invalid_payload"}, state}
     end
   end
+
+  defp match_message(%{"event" => "subscribe", "ids" => nil}, state) do
+    Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: nil})
+    {:ok, state}
+  end
+
+  defp match_message(_message, state), do: {:reply, {:close, 1002, "invalid_payload"}, state}
 
   ### Internal
 
