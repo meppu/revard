@@ -28,7 +28,8 @@ defmodule Revard.MixProject do
       {:plug, "~> 1.14"},
       {:plug_cowboy, "~> 2.6"},
       {:httpoison, "~> 2.1"},
-      {:mongodb_driver, "~> 1.0"}
+      {:mongodb_driver, "~> 1.0"},
+      {:castore, "~> 1.0"}
     ]
   end
 end

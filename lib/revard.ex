@@ -3,6 +3,8 @@ defmodule Revard do
   require Logger
 
   def start(_type, _args) do
+    mongo_url = Application.get_env(:revard, :mongo_url)
+
     children = [
       Plug.Cowboy.child_spec(
         scheme: :http,
@@ -13,7 +15,20 @@ defmodule Revard do
         ]
       ),
       Registry.child_spec(keys: :unique, name: Bucket.Consumers),
-      {Mongo, [name: :mongo, url: Application.get_env(:revard, :mongo_url)]},
+      {Mongo,
+       [
+         name: :mongo,
+         url: mongo_url,
+         ssl: true,
+         ssl_opts: [
+           verify: :verify_peer,
+           cacertfile: CAStore.file_path(),
+           versions: [:"tlsv1.2"],
+           customize_hostname_check: [
+             {:match_fun, :public_key.pkix_verify_hostname_match_fun(:https)}
+           ]
+         ]
+       ]},
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
       Revard.Task.Ping
     ]
