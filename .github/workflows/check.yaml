@@ -1,0 +1,35 @@
+name: Check application
+
+on:
+  - push
+  - pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.14.0"
+          otp-version: "25.0"
+
+      - name: Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: deps
+          key: ${{ runner.os }}-otp-25-${{ hashFiles('**/mix.lock') }}
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile project
+        run: mix compile
+
+      - name: Check formatted
+        run: mix format --check-formatted
