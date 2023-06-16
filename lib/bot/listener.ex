@@ -6,10 +6,12 @@ defmodule Revard.Bot.Listener do
   require Logger
 
   def start_link(host) do
+    Logger.info("Starting bot connection")
+
     token = Application.get_env(:revard, :bot_token)
 
     (host <> "?version=1&format=json&token=" <> token)
-    |> WebSockex.start_link(__MODULE__, nil)
+    |> WebSockex.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   def handle_frame({:text, message}, state) do
@@ -51,8 +53,6 @@ defmodule Revard.Bot.Listener do
 
     {:ok, state}
   end
-
-  def handle_cast(_frame, state), do: {:ok, state}
 
   defp distribute_message(packet) do
     Bucket.Consumers

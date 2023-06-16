@@ -20,10 +20,14 @@ defmodule Revard.Task.Ping do
 
   @impl true
   def handle_info(:tick, state) do
+    # Send Ping to Revolt
+    WebSockex.send_frame(Revard.Bot.Listener, {:ping, <<69, 42, 00>>})
+
+    # Check Pings
     Bucket.Consumers
     |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
     |> Enum.filter(fn {_, data} ->
-      DateTime.diff(DateTime.utc_now(), data.last_ping) > 30
+      DateTime.diff(DateTime.utc_now(), data.last_ping) > 60
     end)
     |> Enum.map(fn {pid, _} ->
       send(pid, :close)
