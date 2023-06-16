@@ -25,7 +25,9 @@ defmodule Revard.Socket.Listener do
 
   def websocket_handle(_message, state), do: {:ok, state}
 
-  def websocket_info({:message, message}, state), do: {:reply, {:text, message}, state}
+  def websocket_info({:message, message}, state),
+    do: {:reply, {:text, Jason.encode!(%{type: "update", data: message})}, state}
+
   def websocket_info(:close, state), do: {:reply, {:close, 1012, "inactive_connection"}, state}
 
   # ping
@@ -37,8 +39,7 @@ defmodule Revard.Socket.Listener do
       Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: ids})
 
       initial_message =
-        ids
-        |> Revard.Cache.Users.get()
+        %{type: "init", data: Revard.Cache.Users.get(ids)}
         |> Jason.encode!()
 
       {:reply, {:text, initial_message}, state}

@@ -39,8 +39,6 @@ defmodule Revard.Bot.Listener do
   def handle_cast(_frame, state), do: {:ok, state}
 
   defp distribute_message(packet) do
-    encoded = Jason.encode!(packet)
-
     Bucket.Consumers
     |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
     |> Enum.filter(fn {_, data} ->
@@ -51,7 +49,7 @@ defmodule Revard.Bot.Listener do
       end
     end)
     |> Enum.map(fn {pid, _} ->
-      send(pid, {:message, encoded})
+      send(pid, {:message, packet})
     end)
   end
 end
