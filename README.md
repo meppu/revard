@@ -1,8 +1,16 @@
+<div align="center">
+
+![logo](.github/assets/revard.png)
+
 # Revard
 
 Revard is a basic [Lanyard](https://github.com/Phineas/lanyard) implementation for Revolt.
 
-Revard allows you to expose your Revolt activities real-time with low latency.
+</div>
+
+Revard allows you to expose your Revolt activities throught WebSocket easily.
+
+An instance is currently running at `revard.meppu.boo`, You must join [this server](https://rvlt.gg/JDkjhpAG) before using it.
 
 ## REST API
 
