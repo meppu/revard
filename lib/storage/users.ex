@@ -41,6 +41,15 @@ defmodule Revard.Storage.Users do
     Mongo.delete_one(:mongo, @coll, %{_id: id})
   end
 
+  def remove(ids) when is_list(ids) do
+    if length(ids) > 0 do
+      ids
+      |> Enum.each(&:ets.delete(:cache, &1))
+
+      Mongo.delete_many(:mongo, @coll, %{_id: %{"$in": ids}})
+    end
+  end
+
   def get(id) when is_binary(id), do: Mongo.find(:mongo, @coll, %{_id: id}).docs
   def get(ids) when is_list(ids), do: Mongo.find(:mongo, @coll, %{_id: %{"$in": ids}}).docs
 

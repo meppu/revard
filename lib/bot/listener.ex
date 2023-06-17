@@ -21,6 +21,19 @@ defmodule Revard.Bot.Listener do
       "Ready" ->
         case Revard.Bot.Rest.members() do
           {:ok, users} ->
+            # These are some actions to sync database
+
+            # Clear database from invalid users
+            current_member_ids =
+              users
+              |> Enum.map(&Map.get(&1, "_id"))
+
+            Storage.Users.get()
+            |> Enum.map(&Map.get(&1, "_id"))
+            |> Enum.filter(&(&1 not in current_member_ids))
+            |> Storage.Users.remove()
+
+            # Insert new members
             Storage.Users.insert(users)
 
           _ ->
