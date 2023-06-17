@@ -18,7 +18,9 @@ An instance is currently running at `revard.meppu.boo`, You must join [this serv
 
 `GET /api/users/:id`
 
-> Example Response
+> Try it out: https://revard.meppu.boo/api/users/01F6YN5JWMHJFKPDZVYB6434HX
+
+Example response:
 
 ```json
 {
@@ -46,6 +48,8 @@ An instance is currently running at `revard.meppu.boo`, You must join [this serv
 ```
 
 ## WebSocket
+
+> Check out [this file](https://github.com/meppu/website/blob/main/js/index.js) for example WebSocket usage.
 
 Revard's WebSocket is actually way simpler than Lanyard.
 
