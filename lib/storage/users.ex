@@ -36,7 +36,10 @@ defmodule Revard.Storage.Users do
     end
   end
 
-  def remove(id) when is_binary(id), do: Mongo.delete_one(:mongo, @coll, %{_id: id})
+  def remove(id) when is_binary(id) do
+    :ets.delete(:cache, id)
+    Mongo.delete_one(:mongo, @coll, %{_id: id})
+  end
 
   def get(id) when is_binary(id), do: Mongo.find(:mongo, @coll, %{_id: id}).docs
   def get(ids) when is_list(ids), do: Mongo.find(:mongo, @coll, %{_id: %{"$in": ids}}).docs

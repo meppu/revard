@@ -3,6 +3,7 @@ defmodule Revard.Bot.Rest do
 
   def user(id) do
     get("/users/" <> id)
+    |> fetch_user_profile(id)
   end
 
   def members() do
@@ -15,6 +16,19 @@ defmodule Revard.Bot.Rest do
   end
 
   ### Internal
+
+  defp fetch_user_profile({:ok, data}, id) do
+    if data["profile"] == nil do
+      case get("/users/" <> id <> "/profile") do
+        {:ok, value} -> {:ok, Map.put(data, "profile", value)}
+        other -> other
+      end
+    else
+      {:ok, data}
+    end
+  end
+
+  defp fetch_user_profile(other, _id), do: other
 
   defp get(path) do
     path
