@@ -1,7 +1,7 @@
 defmodule Revard.API.Utils do
   def json(conn, status, value) do
     conn
-    |> Plug.Conn.put_resp_header("content-type", "application/json")
+    |> Plug.Conn.put_resp_header("content-type", "application/json;charset=UTF-8")
     |> Plug.Conn.send_resp(status, Jason.encode!(value))
     |> Plug.Conn.halt()
   end
