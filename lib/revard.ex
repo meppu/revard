@@ -34,6 +34,9 @@ defmodule Revard do
       Revard.Task.Ping
     ]
 
+    # Simple term storage for caching
+    :ets.new(:cache, [:set, :public, :named_table])
+
     Logger.info("Starting server on port: #{port_to_listen}")
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]

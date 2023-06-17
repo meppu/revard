@@ -5,6 +5,9 @@ defmodule Revard.Storage.Users do
   def insert(users) when is_list(users), do: Mongo.insert_many(:mongo, @coll, users)
 
   def patch(id, data, clear_list) do
+    # Remove ID Cache
+    :ets.delete(:cache, id)
+
     Mongo.update_one(:mongo, @coll, %{_id: id}, %{"$set" => data})
 
     if length(clear_list) > 0 do
