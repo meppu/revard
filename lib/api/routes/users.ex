@@ -18,7 +18,7 @@ defmodule Revard.API.Routes.Users do
     # Otherwise just add current value to cache
     response =
       case :ets.lookup(:cache, user_id) do
-        [{^user_id, value} | _other] ->
+        [{^user_id, value} | _other] when is_map(value) ->
           value
 
         _ ->
