@@ -33,17 +33,21 @@ defmodule Revard.Bot.Rest do
   defp get(path) do
     path
     |> build_request(:get)
-    |> HTTPoison.request()
+    |> Finch.request(Revard.Finch)
     |> case do
-      {:ok, %{body: body}} -> Jason.decode(body)
+      {:ok, %Finch.Response{body: body}} -> Jason.decode(body)
       other -> other
     end
   end
 
-  defp build_request(path, method),
-    do: %HTTPoison.Request{
-      method: method,
-      url: Application.get_env(:revard, :revolt_api) <> path,
-      headers: [{"x-bot-token", Application.get_env(:revard, :bot_token)}]
-    }
+  defp build_request(path, method) do
+    url = Application.get_env(:revard, :revolt_api) <> path
+
+    headers = [
+      {"x-bot-token", Application.get_env(:revard, :bot_token)},
+      {"content-type", "application/json;charset=UTF-8"}
+    ]
+
+    Finch.build(method, url, headers)
+  end
 end

@@ -8,6 +8,7 @@ defmodule Revard do
 
     children = [
       {Bandit, plug: Revard.Router, scheme: :http, port: port_to_listen},
+      {Finch, name: Revard.Finch},
       {Registry, keys: :unique, name: Bucket.Consumers},
       {Mongo,
        [
