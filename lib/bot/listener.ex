@@ -71,7 +71,7 @@ defmodule Revard.Bot.Listener do
     Bucket.Consumers
     |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
     |> Enum.filter(fn {_, data} ->
-      case data.ids do
+      case data do
         [] -> true
         nil -> false
         other -> packet.id in other

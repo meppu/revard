@@ -9,7 +9,7 @@ defmodule Revard.Task.Ping do
     }
   end
 
-  def start_link do
+  def start_link() do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
@@ -24,14 +24,16 @@ defmodule Revard.Task.Ping do
     WebSockex.send_frame(Revard.Bot.Listener, {:ping, <<69, 42, 00>>})
 
     # Check Pings
-    Bucket.Consumers
-    |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
-    |> Enum.filter(fn {_, data} ->
-      DateTime.diff(DateTime.utc_now(), data.last_ping) > 60
-    end)
-    |> Enum.map(fn {pid, _} ->
-      send(pid, :close)
-    end)
+    # Since websock_adapter already does that, it is commented out.
+
+    # Bucket.Consumers
+    # |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
+    # |> Enum.filter(fn {_, data} ->
+    #  DateTime.diff(DateTime.utc_now(), data.last_ping) > 60
+    # end)
+    # |> Enum.map(fn {pid, _} ->
+    #   send(pid, :close)
+    # end)
 
     {:noreply, state}
   end

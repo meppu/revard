@@ -7,15 +7,8 @@ defmodule Revard do
     {port_to_listen, ""} = Integer.parse(Application.get_env(:revard, :port))
 
     children = [
-      Plug.Cowboy.child_spec(
-        scheme: :http,
-        plug: Revard.Router,
-        options: [
-          dispatch: dispatch(),
-          port: port_to_listen
-        ]
-      ),
-      Registry.child_spec(keys: :unique, name: Bucket.Consumers),
+      {Bandit, plug: Revard.Router, scheme: :http, port: port_to_listen},
+      {Registry, keys: :unique, name: Bucket.Consumers},
       {Mongo,
        [
          name: :mongo,
@@ -37,19 +30,7 @@ defmodule Revard do
     # Simple term storage for caching
     :ets.new(:cache, [:set, :public, :named_table])
 
-    Logger.info("Starting server on port: #{port_to_listen}")
-
     opts = [strategy: :one_for_one, name: Revard.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  defp dispatch do
-    [
-      {:_,
-       [
-         {"/gateway", Revard.Socket.Listener, []},
-         {:_, Plug.Cowboy.Handler, {Revard.Router, []}}
-       ]}
-    ]
   end
 end

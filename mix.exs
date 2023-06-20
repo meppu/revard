@@ -24,9 +24,9 @@ defmodule Revard.MixProject do
     [
       {:websockex, "~> 0.4.3"},
       {:jason, "~> 1.4"},
-      {:cowboy, "~> 2.10"},
       {:plug, "~> 1.14"},
-      {:plug_cowboy, "~> 2.6"},
+      {:bandit, "~> 0.7.7"},
+      {:websock_adapter, "~> 0.5.3"},
       {:httpoison, "~> 2.1"},
       {:mongodb_driver, "~> 1.0"},
       {:castore, "~> 1.0"}

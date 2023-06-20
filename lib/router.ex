@@ -4,6 +4,12 @@ defmodule Revard.Router do
   plug(:match)
   plug(:dispatch)
 
+  get "/gateway" do
+    conn
+    |> WebSockAdapter.upgrade(Revard.Socket.Listener, [], max_frame_size: 8192, timeout: 60_000)
+    |> halt()
+  end
+
   forward("/api", to: Revard.API.Router)
 
   match _ do

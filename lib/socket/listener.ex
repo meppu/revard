@@ -1,43 +1,38 @@
 defmodule Revard.Socket.Listener do
-  @behaviour :cowboy_websocket
-
   require Logger
 
-  defstruct [:ids, :last_ping]
-
-  def init(request, _state),
-    do:
-      {:cowboy_websocket, request, nil,
-       %{
-         max_frame_size: 8192
-       }}
-
-  def websocket_init(_state), do: {:ok, create_id()}
-
-  def websocket_handle({:ping, _message}, state) do
-    Logger.debug("Handled ping (socket)")
-
-    update_ping(state)
-    {:reply, {:pong, ":)"}, state}
+  def init(_opts) do
+    {:ok, create_id()}
   end
 
-  def websocket_handle({:text, message}, state) do
+  def handle_control({_message, [opcode: :ping]}, state) do
+    Logger.debug("Handled ping (socket)")
+    {:ok, state}
+  end
+
+  def handle_in({message, [opcode: :text]}, state) do
     case Jason.decode(message) do
       {:ok, decoded} when is_map(decoded) ->
-        update_ping(state)
         match_message(decoded, state)
 
       _ ->
-        {:reply, {:close, 1002, "invalid_payload"}, state}
+        invalid_payload_error(state)
     end
   end
 
-  def websocket_handle(_message, state), do: {:ok, state}
+  def handle_in(_message, state) do
+    {:ok, state}
+  end
 
-  def websocket_info({:message, message}, state),
-    do: {:reply, {:text, Jason.encode!(%{type: "update", data: message})}, state}
+  def handle_info({:message, message}, state) do
+    {:reply, :ok, {:text, Jason.encode!(%{type: "update", data: message})}, state}
+  end
 
-  def websocket_info(:close, state), do: {:reply, {:close, 1012, "inactive_connection"}, state}
+  def terminate(_reason, state) do
+    {:ok, state}
+  end
+
+  ### Internal
 
   defp match_message(%{"event" => "ping"}, state), do: {:ok, state}
 
@@ -45,37 +40,35 @@ defmodule Revard.Socket.Listener do
     Logger.debug("Connection #{state} subscribed to following id(s): #{inspect(ids)} (socket)")
 
     if Enum.all?(ids, &is_binary/1) do
-      Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: ids})
+      Registry.update_value(Bucket.Consumers, state, fn _ -> ids end)
 
       initial_message =
         %{type: "init", data: Revard.Storage.Users.get(ids)}
         |> Jason.encode!()
 
-      {:reply, {:text, initial_message}, state}
+      {:reply, :ok, {:text, initial_message}, state}
     else
-      {:reply, {:close, 1002, "invalid_payload"}, state}
+      invalid_payload_error(state)
     end
   end
 
   defp match_message(%{"event" => "subscribe", "ids" => nil}, state) do
-    Registry.update_value(Bucket.Consumers, state, &%{&1 | ids: nil})
+    Registry.update_value(Bucket.Consumers, state, fn _ -> nil end)
     {:ok, state}
   end
 
-  defp match_message(_message, state), do: {:reply, {:close, 1002, "invalid_payload"}, state}
-
-  ### Internal
-
-  defp update_ping(id) do
-    Logger.debug("Connection pinged: #{id} (socket)")
-    Registry.update_value(Bucket.Consumers, id, &%{&1 | last_ping: DateTime.utc_now()})
+  defp match_message(_message, state) do
+    invalid_payload_error(state)
   end
 
-  defp create_id do
-    id = Base.encode16(:crypto.strong_rand_bytes(20))
-    data = %__MODULE__{ids: nil, last_ping: DateTime.utc_now()}
+  defp invalid_payload_error(state) do
+    {:stop, :normal, {1002, "invalid_payload"}, state}
+  end
 
-    case Registry.register(Bucket.Consumers, id, data) do
+  defp create_id() do
+    id = Base.encode16(:crypto.strong_rand_bytes(20))
+
+    case Registry.register(Bucket.Consumers, id, nil) do
       {:error, _} ->
         create_id()
 
