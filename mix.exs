@@ -27,6 +27,7 @@ defmodule Revard.MixProject do
       {:plug, "~> 1.14"},
       {:bandit, "~> 0.7.7"},
       {:websock_adapter, "~> 0.5.3"},
+      {:cors_plug, "~> 3.0"},
       {:httpoison, "~> 2.1"},
       {:mongodb_driver, "~> 1.0"},
       {:castore, "~> 1.0"}

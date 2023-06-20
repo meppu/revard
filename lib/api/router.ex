@@ -6,6 +6,8 @@ defmodule Revard.API.Router do
 
   plug(:match)
 
+  plug(CORSPlug)
+
   plug(Plug.Parsers,
     parsers: [:json],
     pass: ["application/json"],
