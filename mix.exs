@@ -4,7 +4,7 @@ defmodule Revard.MixProject do
   def project do
     [
       app: :revard,
-      version: "0.2.1",
+      version: "0.3.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps()
