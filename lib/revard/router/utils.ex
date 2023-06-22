@@ -1,4 +1,11 @@
 defmodule Revard.Router.Utils do
+  def redirect(conn, url) do
+    conn
+    |> Plug.Conn.put_resp_header("location", url)
+    |> Plug.Conn.send_resp(:found, "")
+    |> Plug.Conn.halt()
+  end
+
   def json(conn, status, value) do
     conn
     |> Plug.Conn.put_resp_header("content-type", "application/json;charset=UTF-8")

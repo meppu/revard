@@ -10,7 +10,7 @@ Revard is a basic [Lanyard](https://github.com/Phineas/lanyard) implementation f
 
 Revard allows you to expose your Revolt activities throught WebSocket easily.
 
-An instance is currently running at `revard.meppu.boo`, You must join [this server](https://rvlt.gg/FVE16VCd) before using it.
+An instance is currently running at `revard.meppu.boo`, You must join [this server](https://revard.meppu.boo/) before using it.
 
 ## REST API
 
@@ -84,7 +84,8 @@ You must set some environment variables before running the bot:
 
 - `BOT_TOKEN`: Your bot's token, self-bots are not supported right now.
 - `REVOLT_SERVER_ID`: Server ID to watch. Please keep your bot in only one server to avoid conflicts.
-- `MONGO_URL`: MongoDB url, must support SSL.
+- `REVOLT_SERVER_LINK`: Server URL for redirecting.
+- `MONGO_URL`: MongoDB URL (must support SSL).
 - `PORT`: Port to listen, fallbacks to 8000 if not given.
 
 And some special environment variables if you use this bot for another Revolt host:

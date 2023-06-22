@@ -7,6 +7,10 @@ defmodule Revard.Router do
   plug(:match)
   plug(:dispatch)
 
+  get "/" do
+    Utils.redirect(conn, Application.get_env(:revard, :invite_url))
+  end
+
   forward("/api", to: Routes.API)
   forward("/gateway", to: Routes.Gateway)
 

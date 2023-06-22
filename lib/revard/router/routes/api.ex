@@ -5,15 +5,7 @@ defmodule Revard.Router.Routes.API do
   alias Revard.Router.Utils
 
   plug(:match)
-
   plug(CORSPlug)
-
-  plug(Plug.Parsers,
-    parsers: [:json],
-    pass: ["application/json"],
-    json_decoder: Jason
-  )
-
   plug(:dispatch)
 
   forward("/users", to: API.Users)
