@@ -1,10 +1,9 @@
-defmodule Revard.API.Routes.Users do
-  alias Revard.API.Utils
-  alias Revard.Storage
-
+defmodule Revard.API.Users do
   use Plug.Router
 
   require Logger
+
+  alias Revard.Router.Utils
 
   plug(:match)
   plug(:dispatch)
@@ -24,7 +23,7 @@ defmodule Revard.API.Routes.Users do
         _ ->
           value =
             user_id
-            |> Storage.Users.get()
+            |> Revard.Storage.Users.get()
             |> List.first()
 
           :ets.insert(:cache, {user_id, value})

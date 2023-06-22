@@ -15,7 +15,7 @@ defmodule Revard.Task.Ping do
 
   @impl true
   def init(_args) do
-    :timer.send_interval(30000, :tick)
+    :timer.send_interval(25000, :tick)
   end
 
   @impl true
@@ -26,7 +26,7 @@ defmodule Revard.Task.Ping do
     # Check Pings
     # Since websock_adapter already does that, it is commented out.
 
-    # Bucket.Consumers
+    # Revard.Bucket.Consumers
     # |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
     # |> Enum.filter(fn {_, data} ->
     #  DateTime.diff(DateTime.utc_now(), data.last_ping) > 60

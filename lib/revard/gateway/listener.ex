@@ -1,4 +1,4 @@
-defmodule Revard.Socket.Listener do
+defmodule Revard.Gateway.Listener do
   require Logger
 
   def init(_opts) do
@@ -40,7 +40,7 @@ defmodule Revard.Socket.Listener do
     Logger.debug("Connection #{state} subscribed to following id(s): #{inspect(ids)} (socket)")
 
     if Enum.all?(ids, &is_binary/1) do
-      Registry.update_value(Bucket.Consumers, state, fn _ -> ids end)
+      Registry.update_value(Revard.Bucket.Consumers, state, fn _ -> ids end)
 
       initial_message =
         %{type: "init", data: Revard.Storage.Users.get(ids)}
@@ -53,7 +53,7 @@ defmodule Revard.Socket.Listener do
   end
 
   defp match_message(%{"event" => "subscribe", "ids" => nil}, state) do
-    Registry.update_value(Bucket.Consumers, state, fn _ -> nil end)
+    Registry.update_value(Revard.Bucket.Consumers, state, fn _ -> nil end)
     {:ok, state}
   end
 
@@ -68,7 +68,7 @@ defmodule Revard.Socket.Listener do
   defp create_id() do
     id = Base.encode16(:crypto.strong_rand_bytes(20))
 
-    case Registry.register(Bucket.Consumers, id, nil) do
+    case Registry.register(Revard.Bucket.Consumers, id, nil) do
       {:error, _} ->
         create_id()
 

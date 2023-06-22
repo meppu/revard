@@ -28,7 +28,9 @@ defmodule Revard.Bot.Rest do
     end
   end
 
-  defp fetch_user_profile(other, _id), do: other
+  defp fetch_user_profile(other, _id) do
+    other
+  end
 
   defp get(path) do
     path

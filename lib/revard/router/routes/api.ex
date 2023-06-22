@@ -1,8 +1,8 @@
-defmodule Revard.API.Router do
+defmodule Revard.Router.Routes.API do
   use Plug.Router
 
-  alias Revard.API.Routes
-  alias Revard.API.Utils
+  alias Revard.API
+  alias Revard.Router.Utils
 
   plug(:match)
 
@@ -16,7 +16,7 @@ defmodule Revard.API.Router do
 
   plug(:dispatch)
 
-  forward("/users", to: Routes.Users)
+  forward("/users", to: API.Users)
 
   match _ do
     Utils.unknown_route(conn)

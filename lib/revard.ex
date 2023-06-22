@@ -7,25 +7,12 @@ defmodule Revard do
     {port_to_listen, ""} = Integer.parse(Application.get_env(:revard, :port))
 
     children = [
-      {Bandit, plug: Revard.Router, scheme: :http, port: port_to_listen},
+      {Registry, keys: :unique, name: Revard.Bucket.Consumers},
+      {Mongo, mongo_opts(mongo_url)},
       {Finch, name: Revard.Finch},
-      {Registry, keys: :unique, name: Bucket.Consumers},
-      {Mongo,
-       [
-         name: :mongo,
-         url: mongo_url,
-         ssl: true,
-         ssl_opts: [
-           verify: :verify_peer,
-           cacertfile: CAStore.file_path(),
-           versions: [:"tlsv1.2"],
-           customize_hostname_check: [
-             {:match_fun, :public_key.pkix_verify_hostname_match_fun(:https)}
-           ]
-         ]
-       ]},
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
-      Revard.Task.Ping
+      Revard.Task.Ping,
+      {Bandit, plug: Revard.Router, scheme: :http, port: port_to_listen}
     ]
 
     # Simple term storage for caching
@@ -33,5 +20,21 @@ defmodule Revard do
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp mongo_opts(url) do
+    [
+      name: Revard.Mongo,
+      url: url,
+      ssl: true,
+      ssl_opts: [
+        verify: :verify_peer,
+        cacertfile: CAStore.file_path(),
+        versions: [:"tlsv1.2"],
+        customize_hostname_check: [
+          {:match_fun, :public_key.pkix_verify_hostname_match_fun(:https)}
+        ]
+      ]
+    ]
   end
 end

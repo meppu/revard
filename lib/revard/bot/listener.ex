@@ -1,8 +1,6 @@
 defmodule Revard.Bot.Listener do
   use WebSockex
 
-  alias Revard.Storage
-
   require Logger
 
   def start_link(host) do
@@ -11,7 +9,7 @@ defmodule Revard.Bot.Listener do
     token = Application.get_env(:revard, :bot_token)
 
     (host <> "?version=1&format=json&token=" <> token)
-    |> WebSockex.start_link(__MODULE__, nil, name: __MODULE__)
+    |> WebSockex.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def handle_frame({:text, message}, state) do
@@ -28,13 +26,13 @@ defmodule Revard.Bot.Listener do
               users
               |> Enum.map(&Map.get(&1, "_id"))
 
-            Storage.Users.get()
+            Revard.Storage.Users.get()
             |> Enum.map(&Map.get(&1, "_id"))
             |> Enum.filter(&(&1 not in current_member_ids))
-            |> Storage.Users.remove()
+            |> Revard.Storage.Users.remove()
 
             # Insert new members
-            Storage.Users.insert(users)
+            Revard.Storage.Users.insert(users)
 
           _ ->
             Logger.emergency("Failed to fetch server members")
@@ -43,18 +41,18 @@ defmodule Revard.Bot.Listener do
       "UserUpdate" ->
         data = %{id: message["id"], data: message["data"], clear: message["clear"]}
 
-        Storage.Users.patch(data.id, data.data, data.clear)
+        Revard.Storage.Users.patch(data.id, data.data, data.clear)
         distribute_message(data)
 
       "ServerMemberLeave" ->
-        Storage.Users.remove(message["user"])
+        Revard.Storage.Users.remove(message["user"])
 
       "ServerMemberJoin" ->
         message["user"]
         |> Revard.Bot.Rest.user()
         |> case do
           {:ok, data} ->
-            Storage.Users.insert(data)
+            Revard.Storage.Users.insert(data)
 
           _ ->
             Logger.error("Failed to fetch user information")
@@ -68,7 +66,7 @@ defmodule Revard.Bot.Listener do
   end
 
   defp distribute_message(packet) do
-    Bucket.Consumers
+    Revard.Bucket.Consumers
     |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
     |> Enum.filter(fn {_, data} ->
       case data do
