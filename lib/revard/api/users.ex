@@ -11,30 +11,42 @@ defmodule Revard.API.Users do
 
   get "/:id" do
     %Plug.Conn{params: %{"id" => user_id}} = conn
-
     Logger.debug("Getting #{user_id}'s information (http)")
 
-    # Load from cache if exists
-    # Otherwise just add current value to cache
-    response =
-      case Storage.Cache.get(user_id) do
-        [{^user_id, value} | _other] ->
-          value
+    case Storage.Users.get(user_id) do
+      %{"_id" => ^user_id} = response ->
+        Utils.json(conn, 200, response)
 
-        _ ->
-          value =
-            user_id
-            |> Storage.Users.get()
-            |> List.first()
+      nil ->
+        Utils.user_not_found(conn)
+    end
+  end
 
-          Storage.Cache.set(user_id, value)
-          value
-      end
+  get "/:id/avatar" do
+    %Plug.Conn{params: %{"id" => user_id}} = conn
+    Logger.debug("Redirecting to #{user_id}'s avatar (http)")
 
-    if response == nil do
-      Utils.error(conn, 404, "Requested user not found")
-    else
-      Utils.json(conn, 200, response)
+    case Storage.Users.get(user_id) do
+      %{"_id" => ^user_id, "avatar" => %{"_id" => avatar_id}} ->
+        url = Application.get_env(:revard, :autumn_url) <> "/avatars/" <> avatar_id
+        Utils.redirect(conn, url)
+
+      _ ->
+        Utils.user_not_found(conn)
+    end
+  end
+
+  get "/:id/background" do
+    %Plug.Conn{params: %{"id" => user_id}} = conn
+    Logger.debug("Redirecting to #{user_id}'s background (http)")
+
+    case Storage.Users.get(user_id) do
+      %{"_id" => ^user_id, "profile" => %{"background" => %{"_id" => background_id}}} ->
+        url = Application.get_env(:revard, :autumn_url) <> "/backgrounds/" <> background_id
+        Utils.redirect(conn, url)
+
+      _ ->
+        Utils.user_not_found(conn)
     end
   end
 

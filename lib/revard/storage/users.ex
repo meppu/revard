@@ -49,7 +49,16 @@ defmodule Revard.Storage.Users do
   end
 
   def get(id) when is_binary(id) do
-    Mongo.find(@connection, @coll, %{_id: id}).docs
+    case Cache.get(id) do
+      [{^id, value} | _other] ->
+        value
+
+      _ ->
+        value = Mongo.find_one(@connection, @coll, %{_id: id})
+        Cache.set(id, value)
+
+        value
+    end
   end
 
   def get(ids) when is_list(ids) do

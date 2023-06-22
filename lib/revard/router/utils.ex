@@ -18,6 +18,10 @@ defmodule Revard.Router.Utils do
   end
 
   def unknown_route(conn) do
-    error(conn, 404, "Route doesn't exist")
+    error(conn, 404, "Requested path doesn't exist")
+  end
+
+  def user_not_found(conn) do
+    error(conn, 404, "Requested data for user not found")
   end
 end

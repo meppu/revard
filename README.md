@@ -8,6 +8,8 @@ Revard is a basic [Lanyard](https://github.com/Phineas/lanyard) implementation f
 
 </div>
 
+<hr />
+
 Revard allows you to expose your Revolt activities throught WebSocket easily.
 
 An instance is currently running at `revard.meppu.boo`, You must join [this server](https://revard.meppu.boo/) before using it.
@@ -46,6 +48,14 @@ Example response:
   "username": "Glowie"
 }
 ```
+
+`GET /api/users/:id/avatar`
+
+Returns user's avatar image (actually redirect 🤓)
+
+`GET /api/users/:id/background`
+
+Returns user's background image (actually redirect 🤓)
 
 ## WebSocket
 
