@@ -1,4 +1,8 @@
 defmodule Revard.Gateway.Listener do
+  @moduledoc """
+  WebSocket connection
+  """
+
   require Logger
 
   def init(_opts) do
@@ -34,11 +38,15 @@ defmodule Revard.Gateway.Listener do
 
   ### Internal
 
-  defp match_message(%{"event" => "ping"}, state), do: {:ok, state}
+  ## Actions for events
+  defp match_message(%{"event" => "ping"}, state) do
+    {:ok, state}
+  end
 
   defp match_message(%{"event" => "subscribe", "ids" => ids}, state) when is_list(ids) do
     Logger.debug("Connection #{state} subscribed to following id(s): #{inspect(ids)} (socket)")
 
+    # Check if all string
     if Enum.all?(ids, &is_binary/1) do
       Registry.update_value(Revard.Bucket.Consumers, state, fn _ -> ids end)
 
@@ -54,6 +62,7 @@ defmodule Revard.Gateway.Listener do
 
   defp match_message(%{"event" => "subscribe", "ids" => nil}, state) do
     Registry.update_value(Revard.Bucket.Consumers, state, fn _ -> nil end)
+
     {:ok, state}
   end
 
@@ -61,10 +70,12 @@ defmodule Revard.Gateway.Listener do
     invalid_payload_error(state)
   end
 
+  ## Generate invalid payload response
   defp invalid_payload_error(state) do
     {:stop, :normal, {1002, "invalid_payload"}, state}
   end
 
+  ## Generate an ID for session
   defp create_id() do
     id = Base.encode16(:crypto.strong_rand_bytes(20))
 

@@ -1,4 +1,8 @@
 defmodule Revard.Storage.Cache do
+  @moduledoc """
+  Cache storage for users
+  """
+
   use GenServer
 
   def child_spec([]) do
@@ -13,14 +17,23 @@ defmodule Revard.Storage.Cache do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  @doc """
+  Get value with key from cache
+  """
   def get(key) do
     GenServer.call(__MODULE__, {:get, key})
   end
 
+  @doc """
+  Append key-value to cache
+  """
   def set(key, value) do
     GenServer.cast(__MODULE__, {:set, key, value})
   end
 
+  @doc """
+  Remove key from cache
+  """
   def delete(key) do
     GenServer.cast(__MODULE__, {:delete, key})
   end

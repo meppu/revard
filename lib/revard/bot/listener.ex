@@ -1,4 +1,8 @@
 defmodule Revard.Bot.Listener do
+  @moduledoc """
+  Revolt bot connection
+  """
+
   use WebSockex
 
   require Logger
@@ -65,6 +69,7 @@ defmodule Revard.Bot.Listener do
     {:ok, state}
   end
 
+  ## Send message to subscribers
   defp distribute_message(packet) do
     Revard.Bucket.Consumers
     |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])

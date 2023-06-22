@@ -1,4 +1,8 @@
 defmodule Revard.Router do
+  @moduledoc """
+  Root router for Revard web server
+  """
+
   use Plug.Router
 
   alias Revard.Router.Utils
@@ -7,6 +11,7 @@ defmodule Revard.Router do
   plug(:match)
   plug(:dispatch)
 
+  ## Redirect to Revolt server
   get "/" do
     Utils.redirect(conn, Application.get_env(:revard, :invite_url))
   end

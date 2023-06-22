@@ -1,4 +1,8 @@
 defmodule Revard.Task.Ping do
+  @moduledoc """
+  This task send ping messages to Revolt's websocket for bot connectivity
+  """
+
   use GenServer
 
   def child_spec([]) do

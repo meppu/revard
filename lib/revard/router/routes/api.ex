@@ -1,4 +1,8 @@
 defmodule Revard.Router.Routes.API do
+  @moduledoc """
+  Router for /users
+  """
+
   use Plug.Router
 
   alias Revard.API

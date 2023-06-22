@@ -1,4 +1,11 @@
 defmodule Revard.Router.Utils do
+  @moduledoc """
+  Some utils for routers
+  """
+
+  @doc """
+  Redirect connection to given URL
+  """
   def redirect(conn, url) do
     conn
     |> Plug.Conn.put_resp_header("location", url)
@@ -6,6 +13,9 @@ defmodule Revard.Router.Utils do
     |> Plug.Conn.halt()
   end
 
+  @doc """
+  Return JSON response to given connection
+  """
   def json(conn, status, value) do
     conn
     |> Plug.Conn.put_resp_header("content-type", "application/json;charset=UTF-8")
@@ -13,6 +23,9 @@ defmodule Revard.Router.Utils do
     |> Plug.Conn.halt()
   end
 
+  @doc """
+  Return error response to given connection
+  """
   def error(conn, status, message) do
     json(conn, status, %{error: message})
   end

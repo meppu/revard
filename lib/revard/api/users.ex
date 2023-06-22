@@ -1,4 +1,8 @@
 defmodule Revard.API.Users do
+  @moduledoc """
+  User routes
+  """
+
   use Plug.Router
 
   require Logger
@@ -9,6 +13,7 @@ defmodule Revard.API.Users do
   plug(:match)
   plug(:dispatch)
 
+  ## Returns user's data
   get "/:id" do
     %Plug.Conn{params: %{"id" => user_id}} = conn
     Logger.debug("Getting #{user_id}'s information (http)")
@@ -22,6 +27,7 @@ defmodule Revard.API.Users do
     end
   end
 
+  ## Redirects to user's avatar url
   get "/:id/avatar" do
     %Plug.Conn{params: %{"id" => user_id}} = conn
     Logger.debug("Redirecting to #{user_id}'s avatar (http)")
@@ -36,6 +42,7 @@ defmodule Revard.API.Users do
     end
   end
 
+  ## Redirects to user's background url
   get "/:id/background" do
     %Plug.Conn{params: %{"id" => user_id}} = conn
     Logger.debug("Redirecting to #{user_id}'s background (http)")

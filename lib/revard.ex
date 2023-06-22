@@ -1,5 +1,10 @@
 defmodule Revard do
+  @moduledoc """
+  Start point for Revard
+  """
+
   use Application
+
   require Logger
 
   def start(_type, _args) do
@@ -7,12 +12,19 @@ defmodule Revard do
     {port_to_listen, ""} = Integer.parse(Application.get_env(:revard, :port))
 
     children = [
+      # Cache storage
       Revard.Storage.Cache,
+      # MongoDB connection
       {Mongo, mongo_opts(mongo_url)},
+      # Finch
       {Finch, name: Revard.Finch},
+      # Consumer bucket
       {Registry, keys: :unique, name: Revard.Bucket.Consumers},
+      # Revolt bot
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
+      # Revolt pinger
       Revard.Task.Ping,
+      # Web server
       {Bandit, plug: Revard.Router, scheme: :http, port: port_to_listen}
     ]
 
@@ -20,6 +32,7 @@ defmodule Revard do
     Supervisor.start_link(children, opts)
   end
 
+  ## Create MongoDB settings
   defp mongo_opts(url) do
     [
       name: Revard.Mongo,

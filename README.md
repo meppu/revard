@@ -51,11 +51,11 @@ Example response:
 
 `GET /api/users/:id/avatar`
 
-Returns user's avatar image (actually redirect 🤓)
+Returns user's avatar image (actually redirects 🤓)
 
 `GET /api/users/:id/background`
 
-Returns user's background image (actually redirect 🤓)
+Returns user's background image (actually redirects 🤓)
 
 ## WebSocket
 
@@ -102,6 +102,7 @@ And some special environment variables if you use this bot for another Revolt ho
 
 - `REVOLT_WEBSOCKET`: Revolt websocket url, default is "wss://ws.revolt.chat".
 - `REVOLT_API`: Revolt API url, default is "https://api.revolt.chat".
+- `AUTUMN_URL`: Autumn (Revolt CDN) url, default is "https://autumn.revolt.chat".
 
 ### Docker
 

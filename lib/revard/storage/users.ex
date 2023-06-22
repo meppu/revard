@@ -1,11 +1,20 @@
 defmodule Revard.Storage.Users do
+  @moduledoc """
+  User storage using MongoDB
+  """
+
   @connection Revard.Mongo
   @coll "users"
 
   alias Revard.Storage.Cache
 
+  @doc """
+  Insert new user(s) to database
+  """
   def insert(data) when is_map(data) do
+    # Remove user from cache
     Cache.delete(data["_id"])
+
     Mongo.insert_one(@connection, @coll, data)
   end
 
@@ -13,10 +22,16 @@ defmodule Revard.Storage.Users do
     Mongo.insert_many(@connection, @coll, users)
   end
 
+  @doc """
+  Update user values
+  """
   def patch(id, data, clear_list) do
+    # Remove user from cache
     Cache.delete(id)
+
     Mongo.update_one(@connection, @coll, %{_id: id}, %{"$set" => data})
 
+    # Clear given values from user
     if length(clear_list) > 0 do
       clear_payload =
         clear_list
@@ -34,6 +49,9 @@ defmodule Revard.Storage.Users do
     end
   end
 
+  @doc """
+  Remove user(s) from database
+  """
   def remove(id) when is_binary(id) do
     Cache.delete(id)
     Mongo.delete_one(@connection, @coll, %{_id: id})
@@ -48,12 +66,17 @@ defmodule Revard.Storage.Users do
     end
   end
 
+  @doc """
+  Fetch user(s) from database
+  """
   def get(id) when is_binary(id) do
+    # Check if user exists in cache
     case Cache.get(id) do
       [{^id, value} | _other] ->
         value
 
       _ ->
+        # Fetch user and add to cache
         value = Mongo.find_one(@connection, @coll, %{_id: id})
         Cache.set(id, value)
 

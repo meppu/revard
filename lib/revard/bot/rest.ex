@@ -1,11 +1,19 @@
 defmodule Revard.Bot.Rest do
-  ### Exposed
+  @moduledoc """
+  Functions for Revolt API
+  """
 
+  @doc """
+  Get an user from ID
+  """
   def user(id) do
     get("/users/" <> id)
     |> fetch_user_profile(id)
   end
 
+  @doc """
+  Get all members from server
+  """
   def members() do
     server_id = Application.get_env(:revard, :server_id)
 
@@ -16,6 +24,16 @@ defmodule Revard.Bot.Rest do
   end
 
   ### Internal
+
+  defp get(path) do
+    path
+    |> build_request(:get)
+    |> Finch.request(Revard.Finch)
+    |> case do
+      {:ok, %Finch.Response{body: body}} -> Jason.decode(body)
+      other -> other
+    end
+  end
 
   defp fetch_user_profile({:ok, data}, id) do
     if data["profile"] == nil do
@@ -30,16 +48,6 @@ defmodule Revard.Bot.Rest do
 
   defp fetch_user_profile(other, _id) do
     other
-  end
-
-  defp get(path) do
-    path
-    |> build_request(:get)
-    |> Finch.request(Revard.Finch)
-    |> case do
-      {:ok, %Finch.Response{body: body}} -> Jason.decode(body)
-      other -> other
-    end
   end
 
   defp build_request(path, method) do
