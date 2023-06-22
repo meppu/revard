@@ -2,7 +2,10 @@ defmodule Revard.Storage.Users do
   @connection Revard.Mongo
   @coll "users"
 
+  alias Revard.Storage.Cache
+
   def insert(data) when is_map(data) do
+    Cache.delete(data["_id"])
     Mongo.insert_one(@connection, @coll, data)
   end
 
@@ -11,9 +14,7 @@ defmodule Revard.Storage.Users do
   end
 
   def patch(id, data, clear_list) do
-    # Remove ID Cache
-    :ets.delete(:cache, id)
-
+    Cache.delete(id)
     Mongo.update_one(@connection, @coll, %{_id: id}, %{"$set" => data})
 
     if length(clear_list) > 0 do
@@ -34,7 +35,7 @@ defmodule Revard.Storage.Users do
   end
 
   def remove(id) when is_binary(id) do
-    :ets.delete(:cache, id)
+    Cache.delete(id)
     Mongo.delete_one(@connection, @coll, %{_id: id})
   end
 

@@ -4,6 +4,7 @@ defmodule Revard.API.Users do
   require Logger
 
   alias Revard.Router.Utils
+  alias Revard.Storage
 
   plug(:match)
   plug(:dispatch)
@@ -16,17 +17,17 @@ defmodule Revard.API.Users do
     # Load from cache if exists
     # Otherwise just add current value to cache
     response =
-      case :ets.lookup(:cache, user_id) do
-        [{^user_id, value} | _other] when is_map(value) ->
+      case Storage.Cache.get(user_id) do
+        [{^user_id, value} | _other] ->
           value
 
         _ ->
           value =
             user_id
-            |> Revard.Storage.Users.get()
+            |> Storage.Users.get()
             |> List.first()
 
-          :ets.insert(:cache, {user_id, value})
+          Storage.Cache.set(user_id, value)
           value
       end
 

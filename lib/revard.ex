@@ -7,16 +7,14 @@ defmodule Revard do
     {port_to_listen, ""} = Integer.parse(Application.get_env(:revard, :port))
 
     children = [
-      {Registry, keys: :unique, name: Revard.Bucket.Consumers},
+      Revard.Storage.Cache,
       {Mongo, mongo_opts(mongo_url)},
       {Finch, name: Revard.Finch},
+      {Registry, keys: :unique, name: Revard.Bucket.Consumers},
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
       Revard.Task.Ping,
       {Bandit, plug: Revard.Router, scheme: :http, port: port_to_listen}
     ]
-
-    # Simple term storage for caching
-    :ets.new(:cache, [:set, :public, :named_table])
 
     opts = [strategy: :one_for_one, name: Revard.Supervisor]
     Supervisor.start_link(children, opts)
