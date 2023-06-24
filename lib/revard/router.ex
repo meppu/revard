@@ -18,6 +18,7 @@ defmodule Revard.Router do
 
   forward("/api", to: Routes.API)
   forward("/gateway", to: Routes.Gateway)
+  forward("/card", to: Routes.Card)
 
   match _ do
     Utils.unknown_route(conn)
