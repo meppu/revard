@@ -54,7 +54,7 @@ defmodule Revard.Card.Renderer do
           <div
             style="
               height: 125px;
-              background: ##{mask_color}aa;
+              background: ##{mask_color}bb;
               #{if(status, do: "border-top-right-radius: 12px; border-top-left-radius: 12px;", else: "border-radius: 12px;")}
               display: flex;
               align-items: center;
@@ -74,7 +74,7 @@ defmodule Revard.Card.Renderer do
             />
             <div>
               <h3 style="margin-bottom: 2px; color: #fff">#{Utils.encode_string(user_data["display_name"] || username, 18)}</h3>
-              <h4 style="margin-top: 0; #{if(length(badges) > 0, do: "margin-bottom: 6px;", else: "")} color: #ffffffaa">
+              <h4 style="margin-top: 0; #{if(length(badges) > 0, do: "margin-bottom: 6px;", else: "")} color: #ffffffcc">
                 #{Utils.encode_string(username, 18)}##{discriminator}
               </h4>
               <div style="display: #{if(length(badges) > 0, do: "flex", else: "none")};">

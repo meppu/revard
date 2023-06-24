@@ -31,7 +31,7 @@ defmodule Revard.Router.Routes.Card do
         )
         |> send_resp(200, Renderer.render(user_data, options))
 
-      nil ->
+      _ ->
         Utils.user_not_found(conn)
     end
   end
