@@ -77,7 +77,7 @@ defmodule Revard.Gateway.Listener do
 
   ## Generate an ID for session
   defp create_id() do
-    id = Base.encode16(:crypto.strong_rand_bytes(20))
+    id = Base.encode64(:crypto.strong_rand_bytes(12))
 
     case Registry.register(Revard.Bucket.Consumers, id, nil) do
       {:error, _} ->

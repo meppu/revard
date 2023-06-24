@@ -70,18 +70,41 @@ defmodule Revard.Storage.Users do
   @doc """
   Fetch user(s) from database
   """
-  def get(id) when is_binary(id) do
+  def get(id, method) when is_binary(id) do
     # Check if user exists in cache
     case Cache.get(id) do
       [{^id, value} | _other] ->
-        value
+        case method do
+          :user -> value.user
+          _ -> value
+        end
 
       _ ->
         # Fetch user and add to cache
         value = Mongo.find_one(@connection, @coll, %{_id: id})
+
+        # Fetch user images and save as base64
+        avatar_id =
+          case value["avatar"] do
+            %{"_id" => id} -> id
+            _ -> nil
+          end
+
+        background_id =
+          case value["profile"] do
+            %{"background" => %{"_id" => id}} -> id
+            _ -> nil
+          end
+
+        {avatar_base64, background_base64} = Revard.Card.Utils.image64(avatar_id, background_id)
+        value = %{user: value, avatar: avatar_base64, background: background_base64}
+
         Cache.set(id, value)
 
-        value
+        case method do
+          :user -> value.user
+          _ -> value
+        end
     end
   end
 

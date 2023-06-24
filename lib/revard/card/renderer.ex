@@ -7,11 +7,15 @@ defmodule Revard.Card.Renderer do
   alias Revard.Card.Utils
 
   def render(
-        user_id,
         %{
-          "username" => username,
-          "discriminator" => discriminator
-        } = user_data,
+          user:
+            %{
+              "username" => username,
+              "discriminator" => discriminator
+            } = user_data,
+          avatar: avatar_base64,
+          background: background_base64
+        },
         options
       ) do
     # Background Color
@@ -39,7 +43,7 @@ defmodule Revard.Card.Renderer do
         <div xmlns="http://www.w3.org/1999/xhtml" style="
             height: #{if(status, do: "175px", else: "125px")};
             background: ##{bg_color};
-            #{if(options["hide_banner"] != nil, do: "", else: "background-image: url(https://revard.meppu.boo/api/users/#{user_id}/background);")}
+            #{if(options["hide_banner"] != nil, do: "", else: "background-image: url(data:image/png;base64,#{background_base64});")}
             background-position: center;
             background-size: cover;
             border-radius: 12px;
@@ -66,7 +70,7 @@ defmodule Revard.Card.Renderer do
                 border: 4px solid #{get_status_color(user_data)};
                 border-radius: 50%;
               "
-              src="https://revard.meppu.boo/api/users/#{user_id}/avatar"
+              src="data:image/png;base64,#{avatar_base64}"
             />
             <div>
               <h3 style="margin-bottom: 2px; color: #fff">#{Utils.encode_string(user_data["display_name"] || username, 18)}</h3>
@@ -111,7 +115,7 @@ defmodule Revard.Card.Renderer do
         margin-right: 4px;
         padding: 4px;
         "
-        src="https://app.revolt.chat/assets/badges/#{value}.svg"/>
+        src="data:image/svg+xml;base64,#{Revard.Card.Badges.svg(value)}"/>
       """
     end)
   end
