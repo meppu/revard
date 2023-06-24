@@ -93,6 +93,7 @@ defmodule Revard.Card.Renderer do
   defp get_status_color(%{"online" => true, "status" => %{"presence" => "Idle"}}), do: "#F39F00"
   defp get_status_color(%{"online" => true, "status" => %{"presence" => "Focus"}}), do: "#4799F0"
   defp get_status_color(%{"online" => true, "status" => %{"presence" => "Busy"}}), do: "#F84848"
+  defp get_status_color(%{"online" => true}), do: "#3ABF7E"
   defp get_status_color(_other), do: "#A5A5A5"
 
   defp render_badges(%{"badges" => badges}, mask_color) do
