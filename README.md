@@ -20,6 +20,8 @@ Revard is a basic implementation of [Lanyard](https://github.com/Phineas/lanyard
     - [Avatar Endpoint](#avatar-endpoint)
     - [Background Endpoint](#background-endpoint)
   - [WebSocket](#websocket)
+  - [Card](#card)
+    - [Card Options](#card-options)
   - [Self-hosting](#self-hosting)
     - [Environment variables](#environment-variables)
     - [Docker](#docker)
@@ -105,6 +107,31 @@ To subscribe to one or more users, make use of the `subscribe` event:
 By doing so, you will receive timely updates for the specified users within the `ids` array. If you wish to monitor the entire server, simply set it to an empty array. Conversely, if you do not want to monitor any users, set it to null.
 
 To update subscribers, resend the same data with the updated `ids` value.
+
+## Card
+
+With new update, Revard is now able to render SVG card for your Revolt profile. This allows you to embed your Revolt profile to, for example, GitHub README.
+
+Endpoint for card is available at `/card/:id`. For example:
+
+- `https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX`
+  ![card](https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX)
+
+### Card Options
+
+You can pass some options to customize card (as query parameter):
+
+(anything with `=` means it requires a value, anything inside `[]` is value's format)
+
+- `hide_banner`: Hides your profile background.
+- `hide_badges`: Hides your badges.
+- `hide_status`: Hides your text status.
+- `bg_color=[hexadecimal color without #]`: Changes background color.
+- `mask_color=[hexadecimal color without #]`: Changes semi-transparent mask color.
+
+Example usage:
+
+![minimal-card](https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX?hide_banner&hide_badges)
 
 ## Self-hosting
 
