@@ -6,18 +6,34 @@ defmodule Revard.Card.Utils do
   @doc """
   Get user profile and background as base64
   """
-  def image64(avatar, background) do
+  def image64(user_id, avatar, background) do
+    # This functions is just shitcode, need to clean it later!
+
     avatar_encoded =
-      avatar &&
-        Finch.build(
-          :get,
-          Application.get_env(:revard, :autumn_url) <> "/avatars/" <> avatar <> "?max_side=64"
-        )
-        |> Finch.request(Revard.Finch)
-        |> case do
-          {:ok, %{body: avatar_raw}} -> Base.encode64(avatar_raw)
-          _ -> nil
-        end
+      case avatar do
+        nil ->
+          Finch.build(
+            :get,
+            Application.get_env(:revard, :revolt_api) <> "/users/" <> user_id <> "/default_avatar"
+          )
+          |> Finch.request(Revard.Finch)
+          |> case do
+            {:ok, %{body: avatar_raw}} -> Base.encode64(avatar_raw)
+            _ -> nil
+          end
+
+        avatar_id ->
+          Finch.build(
+            :get,
+            Application.get_env(:revard, :autumn_url) <>
+              "/avatars/" <> avatar_id <> "?max_side=64"
+          )
+          |> Finch.request(Revard.Finch)
+          |> case do
+            {:ok, %{body: avatar_raw}} -> Base.encode64(avatar_raw)
+            _ -> nil
+          end
+      end
 
     banner_encoded =
       background &&

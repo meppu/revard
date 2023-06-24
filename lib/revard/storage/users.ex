@@ -81,29 +81,35 @@ defmodule Revard.Storage.Users do
 
       _ ->
         # Fetch user and add to cache
-        value = Mongo.find_one(@connection, @coll, %{_id: id})
+        case Mongo.find_one(@connection, @coll, %{_id: id}) do
+          %{"_id" => user_id} = value ->
+            # Fetch user images and save as base64
+            avatar_id =
+              case value["avatar"] do
+                %{"_id" => id} -> id
+                _ -> nil
+              end
 
-        # Fetch user images and save as base64
-        avatar_id =
-          case value["avatar"] do
-            %{"_id" => id} -> id
-            _ -> nil
-          end
+            background_id =
+              case value["profile"] do
+                %{"background" => %{"_id" => id}} -> id
+                _ -> nil
+              end
 
-        background_id =
-          case value["profile"] do
-            %{"background" => %{"_id" => id}} -> id
-            _ -> nil
-          end
+            {avatar_base64, background_base64} =
+              Revard.Card.Utils.image64(user_id, avatar_id, background_id)
 
-        {avatar_base64, background_base64} = Revard.Card.Utils.image64(avatar_id, background_id)
-        value = %{user: value, avatar: avatar_base64, background: background_base64}
+            value = %{user: value, avatar: avatar_base64, background: background_base64}
 
-        Cache.set(id, value)
+            Cache.set(id, value)
 
-        case method do
-          :user -> value.user
-          _ -> value
+            case method do
+              :user -> value.user
+              _ -> value
+            end
+
+          _ ->
+            Cache.set(id, %{user: nil, avatar: nil, background: nil})
         end
     end
   end

@@ -22,7 +22,7 @@ defmodule Revard.API.Users do
       %{"_id" => ^user_id} = response ->
         Utils.json(conn, 200, response)
 
-      nil ->
+      _ ->
         Utils.user_not_found(conn)
     end
   end
@@ -35,6 +35,12 @@ defmodule Revard.API.Users do
     case Storage.Users.get(user_id, :user) do
       %{"_id" => ^user_id, "avatar" => %{"_id" => avatar_id}} ->
         url = Application.get_env(:revard, :autumn_url) <> "/avatars/" <> avatar_id
+        Utils.redirect(conn, url)
+
+      %{"_id" => ^user_id} ->
+        url =
+          Application.get_env(:revard, :revolt_api) <> "/users/" <> user_id <> "/default_avatar"
+
         Utils.redirect(conn, url)
 
       _ ->
