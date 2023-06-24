@@ -26,7 +26,7 @@ defmodule Revard.Card.Utils do
           Finch.build(
             :get,
             Application.get_env(:revard, :autumn_url) <>
-              "/avatars/" <> avatar_id <> "?max_side=64"
+              "/avatars/" <> avatar_id <> "?max_side=128"
           )
           |> Finch.request(Revard.Finch)
           |> case do
