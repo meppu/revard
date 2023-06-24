@@ -4,23 +4,41 @@
 
 # Revard
 
-Revard is a basic [Lanyard](https://github.com/Phineas/lanyard) implementation for Revolt.
+Revard is a basic implementation of [Lanyard](https://github.com/Phineas/lanyard) for Revolt.
 
 </div>
 
 <hr />
 
-Revard allows you to expose your Revolt activities throught WebSocket easily.
+## Index
 
-An instance is currently running at `revard.meppu.boo`, You must join [this server](https://revard.meppu.boo/) before using it.
+- [Revard](#revard)
+  - [Index](#index)
+  - [Introduction](#introduction)
+  - [REST API](#rest-api)
+    - [Retrieving user information](#retrieving-user-information)
+    - [Avatar Endpoint](#avatar-endpoint)
+    - [Background Endpoint](#background-endpoint)
+  - [WebSocket](#websocket)
+  - [Self-hosting](#self-hosting)
+    - [Environment variables](#environment-variables)
+    - [Docker](#docker)
+  - [Contributing](#contributing)
+  - [License](#license)
+
+## Introduction
+
+Revard empowers you to effortlessly expose and monitor your Revolt activities.
+
+An instance is currently running at `revard.meppu.boo`. Before using it, you must join [this server](https://revard.meppu.boo/).
 
 ## REST API
 
-### Getting an user's informations
+### Retrieving user information
 
 `GET /api/users/:id`
 
-> Try it out: https://revard.meppu.boo/api/users/01F6YN5JWMHJFKPDZVYB6434HX
+> Give it a try: https://revard.meppu.boo/api/users/01F6YN5JWMHJFKPDZVYB6434HX
 
 Example response:
 
@@ -49,29 +67,33 @@ Example response:
 }
 ```
 
+### Avatar Endpoint
+
 `GET /api/users/:id/avatar`
 
-Returns user's avatar image (actually redirects 🤓)
+Returns the avatar image of the specified user. (It actually redirects 🤓)
+
+### Background Endpoint
 
 `GET /api/users/:id/background`
 
-Returns user's background image (actually redirects 🤓)
+Returns the background image of the specified user. (It actually redirects 🤓)
 
 ## WebSocket
 
-> Check out [this file](https://github.com/meppu/website/blob/main/js/index.js) for example WebSocket usage.
+> Check out [this file](https://github.com/meppu/website/blob/main/js/index.js) for an example of WebSocket usage.
 
-Revard's WebSocket is actually way simpler than Lanyard.
+Revard's WebSocket functionality is designed to be simpler than that of Lanyard.
 
-You can connect WebSocket from `/gateway` endpoint. Revard uses JSON for sending/receiving data.
+You can establish a WebSocket connection by using the `/gateway` endpoint. Revard uses JSON for sending and receiving data.
 
-After connection, you need to send a ping every 30 second. This can be done with sending `ping` frame, or just sending following data:
+After connecting, you need to send a ping every 30 seconds. You can accomplish this by sending a `ping` frame or by simply sending the following data:
 
 ```json
 { "event": "ping" }
 ```
 
-To subscribe one or more user, You can use `subscribe` event:
+To subscribe to one or more users, make use of the `subscribe` event:
 
 ```json
 {
@@ -80,33 +102,33 @@ To subscribe one or more user, You can use `subscribe` event:
 }
 ```
 
-Now you will receive updates for users in `ids`. If you want to watch whole server, you can just send an empty array. If you don't want to watch anything, set it to `null`.
+By doing so, you will receive timely updates for the specified users within the `ids` array. If you wish to monitor the entire server, simply set it to an empty array. Conversely, if you do not want to monitor any users, set it to null.
 
-To update subscribers, just send same thing again with updated `ids` value.
+To update subscribers, resend the same data with the updated `ids` value.
 
 ## Self-hosting
 
-If you don't want to join our server, or make it special for your own server, you can host it yourself.
+If you prefer not to join our server or want to make it specific to your own server, you can host Revard yourself.
 
 ### Environment variables
 
-You must set some environment variables before running the bot:
+Before running the bot, you must set the following environment variables:
 
-- `BOT_TOKEN`: Your bot's token, self-bots are not supported right now.
-- `REVOLT_SERVER_ID`: Server ID to watch. Please keep your bot in only one server to avoid conflicts.
-- `REVOLT_SERVER_LINK`: Server URL for redirecting.
-- `MONGO_URL`: MongoDB URL (must support SSL).
-- `PORT`: Port to listen, fallbacks to 8000 if not given.
+- `BOT_TOKEN`: Your bot's token. Please note that self-bots are not supported at the moment.
+- `REVOLT_SERVER_ID`: The server ID to watch. To avoid conflicts, ensure that your bot is only in one server.
+- `REVOLT_SERVER_LINK`: The URL for Revolt server redirection.
+- `MONGO_URL`: The URL for MongoDB (must support SSL).
+- `PORT`: The port to listen on. If not given, it falls back to 8000.
 
-And some special environment variables if you use this bot for another Revolt host:
+Additionally, if you are using this bot for another Revolt host, you need to set these special environment variables:
 
-- `REVOLT_WEBSOCKET`: Revolt websocket url, default is "wss://ws.revolt.chat".
-- `REVOLT_API`: Revolt API url, default is "https://api.revolt.chat".
-- `AUTUMN_URL`: Autumn (Revolt CDN) url, default is "https://autumn.revolt.chat".
+- `REVOLT_WEBSOCKET`: Revolt WebSocket URL. The default is "wss://ws.revolt.chat".
+- `REVOLT_API`: Revolt API URL. The default is "https://api.revolt.chat".
+- `AUTUMN_URL`: Autumn (Revolt CDN) URL. The default is "https://autumn.revolt.chat".
 
 ### Docker
 
-You can use Docker to host your own bot, for example:
+You can use Docker to host your own bot. For example:
 
 ```bash
 $ docker run --env-file=.env ghcr.io/meppu/revard:latest start
@@ -116,7 +138,7 @@ $ docker run --env-file=.env ghcr.io/meppu/revard:latest start
 
 You can always report bugs and request features via [GitHub Issues](/issues).
 
-For pull requests, make sure your code is well-formatted and at least can explain itself.
+When submitting pull requests, ensure that your code is well-formatted and can adequately explain itself.
 
 ## License
 
