@@ -111,6 +111,7 @@ defmodule Revard.Card.Renderer do
         width: 20px;
         height: 20px;
         background: ##{mask_color}aa;
+        border: 1px solid #ffffff33;
         border-radius: 5px;
         margin-right: 4px;
         padding: 4px;
