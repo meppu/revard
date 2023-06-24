@@ -41,6 +41,7 @@ defmodule Revard.Storage.Users do
             "ProfileBackground" -> Map.put(acc, "profile.background", "")
             "StatusText" -> Map.put(acc, "status.text", "")
             "Avatar" -> Map.put(acc, "avatar", "")
+            "DisplayName" -> Map.put(acc, "display_name", "")
             _ -> acc
           end
         end)
