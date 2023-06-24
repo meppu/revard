@@ -54,7 +54,7 @@ defmodule Revard.Card.Renderer do
           <div
             style="
               height: 125px;
-              background: ##{mask_color}bb;
+              background: ##{mask_color}cc;
               #{if(status, do: "border-top-right-radius: 12px; border-top-left-radius: 12px;", else: "border-radius: 12px;")}
               display: flex;
               align-items: center;
@@ -124,7 +124,7 @@ defmodule Revard.Card.Renderer do
     []
   end
 
-  defp render_status(%{"status" => %{"text" => status_text}}, mask_color) do
+  defp render_status(%{"online" => true, "status" => %{"text" => status_text}}, mask_color) do
     """
     <div
     style="
