@@ -10,6 +10,7 @@ ADD . /app/
 RUN cd /app
 
 # pre-compile
+RUN apk add --update git
 RUN mix local.hex --force
 RUN mix local.rebar --force
 RUN mix deps.get
