@@ -28,8 +28,8 @@ defmodule Revard.Gateway.Listener do
     {:ok, state}
   end
 
-  def handle_info({:message, message}, state) do
-    {:reply, :ok, {:text, Jason.encode!(%{type: "update", data: message})}, state}
+  def handle_info({:remote_message, message}, state) do
+    {:reply, :ok, {:text, message}, state}
   end
 
   def terminate(_reason, state) do

@@ -30,7 +30,8 @@ defmodule Revard.MixProject do
       {:cors_plug, "~> 3.0"},
       {:finch, "~> 0.16.0"},
       {:castore, "~> 1.0"},
-      {:mongodb_driver, "~> 1.0"}
+      {:mongodb_driver, "~> 1.0"},
+      {:manifold, git: "https://github.com/meppu/manifold", branch: "fix/deprecated"}
     ]
   end
 end

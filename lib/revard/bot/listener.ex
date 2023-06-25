@@ -74,6 +74,8 @@ defmodule Revard.Bot.Listener do
 
   ## Send message to subscribers
   defp distribute_message(packet) do
+    info_packet = {:remote_message, Jason.encode!(%{type: "update", data: packet})}
+
     Revard.Bucket.Consumers
     |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
     |> Enum.filter(fn {_, data} ->
@@ -83,8 +85,7 @@ defmodule Revard.Bot.Listener do
         other -> packet.id in other
       end
     end)
-    |> Enum.map(fn {pid, _} ->
-      send(pid, {:message, packet})
-    end)
+    |> Enum.map(fn {pid, _} -> pid end)
+    |> Manifold.send(info_packet, pack_mode: :binary)
   end
 end
