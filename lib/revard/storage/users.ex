@@ -82,24 +82,9 @@ defmodule Revard.Storage.Users do
       _ ->
         # Fetch user and add to cache
         case Mongo.find_one(@connection, @coll, %{_id: id}) do
-          %{"_id" => user_id} = value ->
-            # Fetch user images and save as base64
-            avatar_id =
-              case value["avatar"] do
-                %{"_id" => id} -> id
-                _ -> nil
-              end
-
-            background_id =
-              case value["profile"] do
-                %{"background" => %{"_id" => id}} -> id
-                _ -> nil
-              end
-
-            {avatar_base64, background_base64} =
-              Revard.Card.Utils.image64(user_id, avatar_id, background_id)
-
-            value = %{user: value, avatar: avatar_base64, background: background_base64}
+          %{"_id" => ^id} = user_data ->
+            {avatar_b64, background_b64} = __MODULE__.Utils.get_user_images(user_data, :base64)
+            value = %{user: user_data, avatar: avatar_b64, background: background_b64}
 
             Cache.set(id, value)
 

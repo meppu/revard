@@ -5,8 +5,7 @@ defmodule Revard.Router do
 
   use Plug.Router
 
-  alias Revard.Router.Utils
-  alias Revard.Router.Routes
+  alias __MODULE__.{Utils, Routes}
 
   plug(:match)
   plug(:dispatch)

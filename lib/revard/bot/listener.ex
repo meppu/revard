@@ -7,6 +7,9 @@ defmodule Revard.Bot.Listener do
 
   require Logger
 
+  alias Revard.Storage.Users
+  alias Revard.Bot.Rest
+
   def start_link(host) do
     Logger.info("Starting bot connection")
 
@@ -21,7 +24,7 @@ defmodule Revard.Bot.Listener do
 
     case message["type"] do
       "Ready" ->
-        case Revard.Bot.Rest.members() do
+        case Rest.members() do
           {:ok, users} ->
             # These are some actions to sync database
 
@@ -30,13 +33,13 @@ defmodule Revard.Bot.Listener do
               users
               |> Enum.map(&Map.get(&1, "_id"))
 
-            Revard.Storage.Users.get()
+            Users.get()
             |> Enum.map(&Map.get(&1, "_id"))
             |> Enum.filter(&(&1 not in current_member_ids))
-            |> Revard.Storage.Users.remove()
+            |> Users.remove()
 
             # Insert new members
-            Revard.Storage.Users.insert(users)
+            Users.insert(users)
 
           _ ->
             Logger.emergency("Failed to fetch server members")
@@ -45,18 +48,18 @@ defmodule Revard.Bot.Listener do
       "UserUpdate" ->
         data = %{id: message["id"], data: message["data"], clear: message["clear"]}
 
-        Revard.Storage.Users.patch(data.id, data.data, data.clear)
+        Users.patch(data.id, data.data, data.clear)
         distribute_message(data)
 
       "ServerMemberLeave" ->
-        Revard.Storage.Users.remove(message["user"])
+        Users.remove(message["user"])
 
       "ServerMemberJoin" ->
         message["user"]
-        |> Revard.Bot.Rest.user()
+        |> Rest.user()
         |> case do
           {:ok, data} ->
-            Revard.Storage.Users.insert(data)
+            Users.insert(data)
 
           _ ->
             Logger.error("Failed to fetch user information")

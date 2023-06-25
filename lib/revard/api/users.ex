@@ -8,7 +8,7 @@ defmodule Revard.API.Users do
   require Logger
 
   alias Revard.Router.Utils
-  alias Revard.Storage
+  alias Revard.Storage.Users
 
   plug(:match)
   plug(:dispatch)
@@ -18,7 +18,7 @@ defmodule Revard.API.Users do
     %Plug.Conn{params: %{"id" => user_id}} = conn
     Logger.debug("Getting #{user_id}'s information (http)")
 
-    case Storage.Users.get(user_id, :user) do
+    case Users.get(user_id, :user) do
       %{"_id" => ^user_id} = response ->
         Utils.json(conn, 200, response)
 
@@ -32,15 +32,9 @@ defmodule Revard.API.Users do
     %Plug.Conn{params: %{"id" => user_id}} = conn
     Logger.debug("Redirecting to #{user_id}'s avatar (http)")
 
-    case Storage.Users.get(user_id, :user) do
-      %{"_id" => ^user_id, "avatar" => %{"_id" => avatar_id}} ->
-        url = Application.get_env(:revard, :autumn_url) <> "/avatars/" <> avatar_id
-        Utils.redirect(conn, url)
-
-      %{"_id" => ^user_id} ->
-        url =
-          Application.get_env(:revard, :revolt_api) <> "/users/" <> user_id <> "/default_avatar"
-
+    case Users.get(user_id, :user) do
+      %{"_id" => ^user_id} = user_data ->
+        url = Users.Utils.get_user_avatar(user_data, {:url, nil})
         Utils.redirect(conn, url)
 
       _ ->
@@ -53,9 +47,9 @@ defmodule Revard.API.Users do
     %Plug.Conn{params: %{"id" => user_id}} = conn
     Logger.debug("Redirecting to #{user_id}'s background (http)")
 
-    case Storage.Users.get(user_id, :user) do
-      %{"_id" => ^user_id, "profile" => %{"background" => %{"_id" => background_id}}} ->
-        url = Application.get_env(:revard, :autumn_url) <> "/backgrounds/" <> background_id
+    case Users.get(user_id, :user) do
+      %{"_id" => ^user_id, "profile" => %{"background" => %{"_id" => _background_id}}} = user_data ->
+        url = Users.Utils.get_user_background(user_data, {:url, nil})
         Utils.redirect(conn, url)
 
       _ ->
