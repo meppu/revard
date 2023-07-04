@@ -24,6 +24,14 @@ defmodule Revard.Bot.Listener do
     {:ok, state}
   end
 
+  def terminate(close_reason, state) do
+    close_reason
+    |> inspect(pretty: true)
+    |> Logger.error()
+
+    {:ok, state}
+  end
+
   def handle_frame({:text, message}, state) do
     message = Jason.decode!(message)
 
