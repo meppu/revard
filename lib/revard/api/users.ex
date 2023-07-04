@@ -10,8 +10,8 @@ defmodule Revard.API.Users do
   alias Revard.Router.Utils
   alias Revard.Storage.Users
 
-  plug(:match)
-  plug(:dispatch)
+  plug :match
+  plug :dispatch
 
   ## Returns user's data
   get "/:id" do

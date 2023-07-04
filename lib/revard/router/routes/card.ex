@@ -11,8 +11,8 @@ defmodule Revard.Router.Routes.Card do
   alias Revard.Storage
   alias Revard.Card.Renderer
 
-  plug(:match)
-  plug(:dispatch)
+  plug :match
+  plug :dispatch
 
   ## Render card and return svg
   get "/:id" do

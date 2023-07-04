@@ -5,27 +5,19 @@ defmodule Revard.Task.Ping do
 
   use GenServer
 
-  def child_spec([]) do
-    %{
-      id: __MODULE__,
-      start: {__MODULE__, :start_link, []},
-      restart: :transient
-    }
-  end
-
-  def start_link() do
+  def start_link([]) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   @impl true
   def init(_args) do
-    :timer.send_interval(25000, :tick)
+    :timer.send_interval(20000, :tick)
   end
 
   @impl true
   def handle_info(:tick, state) do
     # Send Ping to Revolt
-    WebSockex.send_frame(Revard.Bot.Listener, {:ping, <<69, 42, 00>>})
+    WebSockex.send_frame(Revard.Bot.Listener, {:text, "{\"type\":\"Ping\",\"data\":0}"})
 
     # Check Pings
     # Since websock_adapter already does that, it is commented out.

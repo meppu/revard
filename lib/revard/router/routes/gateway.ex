@@ -7,8 +7,8 @@ defmodule Revard.Router.Routes.Gateway do
 
   alias Revard.Router.Utils
 
-  plug(:match)
-  plug(:dispatch)
+  plug :match
+  plug :dispatch
 
   ## Upgrade to websocket connection
   get "/" do

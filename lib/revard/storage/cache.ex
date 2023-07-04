@@ -5,15 +5,9 @@ defmodule Revard.Storage.Cache do
 
   use GenServer
 
-  def child_spec([]) do
-    %{
-      id: __MODULE__,
-      start: {__MODULE__, :start_link, []},
-      restart: :transient
-    }
-  end
+  ### Client
 
-  def start_link() do
+  def start_link([]) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
@@ -37,6 +31,8 @@ defmodule Revard.Storage.Cache do
   def delete(key) do
     GenServer.cast(__MODULE__, {:delete, key})
   end
+
+  ### Server
 
   @impl true
   def init(_args) do
