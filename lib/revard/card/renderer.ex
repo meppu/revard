@@ -26,7 +26,7 @@ defmodule Revard.Card.Renderer do
       if(Utils.hex_color?(options["mask_color"]), do: options["mask_color"], else: "000000")
 
     # Badge elements
-    badges = if(options["hide_badges"] != nil, do: [], else: render_badges(user_data, mask_color))
+    badges = if(options["hide_badges"] != nil, do: [], else: render_badges(user_data))
 
     # Status element
     status =
@@ -90,7 +90,7 @@ defmodule Revard.Card.Renderer do
   defp get_status_color(%{"online" => true}), do: "#3ABF7E"
   defp get_status_color(_other), do: "#A5A5A5"
 
-  defp render_badges(%{"badges" => badges}, mask_color) do
+  defp render_badges(%{"badges" => badges}) do
     [
       (badges &&& 1) == 1 && "developer",
       (badges &&& 2) == 2 && "translator",
@@ -109,7 +109,7 @@ defmodule Revard.Card.Renderer do
     )
   end
 
-  defp render_badges(_other, _color) do
+  defp render_badges(_other) do
     []
   end
 
