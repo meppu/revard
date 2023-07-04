@@ -104,7 +104,7 @@ To subscribe to one or more users, make use of the `subscribe` event:
 }
 ```
 
-By doing so, you will receive real-time updates for the specified users within the `ids` array.
+By doing so, you will receive real-time updates for the specified users within the `ids` array. If the `ids` is an empty list (`[]`) or `null`, it will unsubscribe from all the subscriptions without returning anything.
 
 To update subscribers, resend the same data with the updated `ids` value.
 

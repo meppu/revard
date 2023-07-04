@@ -48,19 +48,32 @@ defmodule Revard.Gateway.Listener do
     {:ok, state}
   end
 
+  defp match_message(%{"event" => "subscribe", "ids" => nil}, state) do
+    # Unsubscribe all
+    Enum.each(state, &Phoenix.PubSub.unsubscribe(@pubsub, &1))
+
+    {:ok, []}
+  end
+
+  defp match_message(%{"event" => "subscribe", "ids" => []} = message, state) do
+    message
+    |> Map.put("ids", nil)
+    |> match_message(state)
+  end
+
   defp match_message(%{"event" => "subscribe", "ids" => ids}, state) when is_list(ids) do
     # Check format
     if Enum.all?(ids, &check_id/1) do
       # Unsubscribe all
       Enum.each(state, &Phoenix.PubSub.unsubscribe(@pubsub, &1))
 
-      # Subscribe given ones
-      Enum.each(ids, &Phoenix.PubSub.subscribe(@pubsub, &1))
-
       # Debug message
       Logger.debug(
-        "Connection #{inspect(self())} subscribed to following id(s): #{inspect(ids)} (socket)"
+        "Connection #{inspect(self())} subscribing to following id(s): #{inspect(ids)} (socket)"
       )
+
+      # Subscribe given ones
+      Enum.each(ids, &Phoenix.PubSub.subscribe(@pubsub, &1))
 
       # Reply with initial message
       initial_message =
@@ -71,13 +84,6 @@ defmodule Revard.Gateway.Listener do
     else
       invalid_payload_error(state)
     end
-  end
-
-  defp match_message(%{"event" => "subscribe", "ids" => nil}, state) do
-    # Unsubscribe all
-    Enum.each(state, &Phoenix.PubSub.unsubscribe(@pubsub, &1))
-
-    {:ok, []}
   end
 
   defp match_message(_message, state) do
