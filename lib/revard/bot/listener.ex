@@ -10,6 +10,8 @@ defmodule Revard.Bot.Listener do
   alias Revard.Storage.Users
   alias Revard.Bot.Rest
 
+  @pubsub Revard.PubSub
+
   def start_link(host) do
     token = Application.get_env(:revard, :bot_token)
 
@@ -77,18 +79,7 @@ defmodule Revard.Bot.Listener do
 
   ## Send message to subscribers
   defp distribute_message(packet) do
-    info_packet = {:remote_message, Jason.encode!(%{type: "update", data: packet})}
-
-    Revard.Bucket.Consumers
-    |> Registry.select([{{:_, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}])
-    |> Enum.filter(fn {_, data} ->
-      case data do
-        [] -> true
-        nil -> false
-        other -> packet.id in other
-      end
-    end)
-    |> Enum.map(fn {pid, _} -> pid end)
-    |> Manifold.send(info_packet, pack_mode: :binary)
+    message = {:remote_message, Jason.encode!(%{type: "update", data: packet})}
+    Phoenix.PubSub.broadcast(@pubsub, packet.id, message)
   end
 end

@@ -18,8 +18,8 @@ defmodule Revard do
       {Mongo, mongo_opts(mongo_url)},
       # Finch
       {Finch, name: Revard.Finch},
-      # Consumer bucket
-      {Registry, keys: :unique, name: Revard.Bucket.Consumers},
+      # PubSub
+      {Phoenix.PubSub, keys: :unique, name: Revard.PubSub},
       # Revolt bot
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
       # Revolt pinger

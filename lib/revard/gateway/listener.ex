@@ -1,16 +1,20 @@
 defmodule Revard.Gateway.Listener do
   @moduledoc """
   WebSocket connection
+
+  State holds current subscribers
   """
 
   require Logger
 
+  @pubsub Revard.PubSub
+
   def init(_opts) do
-    {:ok, create_id()}
+    {:ok, []}
   end
 
   def handle_control({_message, [opcode: :ping]}, state) do
-    Logger.debug("Handled ping (socket)")
+    Logger.debug("Handle ping frame (socket)")
     {:ok, state}
   end
 
@@ -40,30 +44,40 @@ defmodule Revard.Gateway.Listener do
 
   ## Actions for events
   defp match_message(%{"event" => "ping"}, state) do
+    Logger.debug("Handle ping event (socket)")
     {:ok, state}
   end
 
   defp match_message(%{"event" => "subscribe", "ids" => ids}, state) when is_list(ids) do
-    Logger.debug("Connection #{state} subscribed to following id(s): #{inspect(ids)} (socket)")
+    # Check format
+    if Enum.all?(ids, &check_id/1) do
+      # Unsubscribe all
+      Enum.each(state, &Phoenix.PubSub.unsubscribe(@pubsub, &1))
 
-    # Check if all string
-    if Enum.all?(ids, &is_binary/1) do
-      Registry.update_value(Revard.Bucket.Consumers, state, fn _ -> ids end)
+      # Subscribe given ones
+      Enum.each(ids, &Phoenix.PubSub.subscribe(@pubsub, &1))
 
+      # Debug message
+      Logger.debug(
+        "Connection #{inspect(self())} subscribed to following id(s): #{inspect(ids)} (socket)"
+      )
+
+      # Reply with initial message
       initial_message =
         %{type: "init", data: Revard.Storage.Users.get(ids)}
         |> Jason.encode!()
 
-      {:reply, :ok, {:text, initial_message}, state}
+      {:reply, :ok, {:text, initial_message}, ids}
     else
       invalid_payload_error(state)
     end
   end
 
   defp match_message(%{"event" => "subscribe", "ids" => nil}, state) do
-    Registry.update_value(Revard.Bucket.Consumers, state, fn _ -> nil end)
+    # Unsubscribe all
+    Enum.each(state, &Phoenix.PubSub.unsubscribe(@pubsub, &1))
 
-    {:ok, state}
+    {:ok, []}
   end
 
   defp match_message(_message, state) do
@@ -75,17 +89,12 @@ defmodule Revard.Gateway.Listener do
     {:stop, :normal, {1002, "invalid_payload"}, state}
   end
 
-  ## Generate an ID for session
-  defp create_id() do
-    id = Base.encode64(:crypto.strong_rand_bytes(12))
+  ## Check if id has correct format
+  defp check_id(id) when is_binary(id) do
+    Regex.match?(~r/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/, id)
+  end
 
-    case Registry.register(Revard.Bucket.Consumers, id, nil) do
-      {:error, _} ->
-        create_id()
-
-      {:ok, _} ->
-        Logger.debug("New connection: #{id} (socket)")
-        id
-    end
+  defp check_id(_other) do
+    false
   end
 end

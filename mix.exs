@@ -31,7 +31,7 @@ defmodule Revard.MixProject do
       {:finch, "~> 0.16.0"},
       {:castore, "~> 1.0"},
       {:mongodb_driver, "~> 1.0"},
-      {:manifold, git: "https://github.com/meppu/manifold", branch: "fix/deprecated"}
+      {:phoenix_pubsub, "~> 2.1"}
     ]
   end
 end
