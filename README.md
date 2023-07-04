@@ -104,30 +104,32 @@ To subscribe to one or more users, make use of the `subscribe` event:
 }
 ```
 
-By doing so, you will receive timely updates for the specified users within the `ids` array. If you wish to monitor the entire server, simply set it to an empty array. Conversely, if you do not want to monitor any users, set it to null.
+By doing so, you will receive real-time updates for the specified users within the `ids` array.
 
 To update subscribers, resend the same data with the updated `ids` value.
 
+> ⚠️ Starting from version `0.5.4`, The capability to monitor all members on the server has been removed as a precautionary measure against potential misuse.
+
 ## Card
 
-With new update, Revard is now able to render SVG card for your Revolt profile. This allows you to embed your Revolt profile to, for example, GitHub README.
+With the new update, Revard now has the capability to render an SVG card for your Revolt profile. This allows you to embed your Revolt profile, for example, in your GitHub README.
 
-Endpoint for card is available at `/card/:id`. For example:
+The endpoint for the card is available at `/card/:id`. For example:
 
 - `https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX`
   ![card](https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX)
 
 ### Card Options
 
-You can pass some options to customize card (as query parameter):
+You can provide certain options to customize the card using query parameters:
 
-(anything with `=` means it requires a value, anything inside `[]` is value's format)
+> Anything with `=` requires a value, anything inside `[]` denotes the format of the value.
 
 - `hide_banner`: Hides your profile background.
 - `hide_badges`: Hides your badges.
 - `hide_status`: Hides your text status.
-- `bg_color=[hexadecimal color without #]`: Changes background color.
-- `mask_color=[hexadecimal color without #]`: Changes semi-transparent mask color.
+- `bg_color=[hexadecimal color without #]`: Changes the background color.
+- `mask_color=[hexadecimal color without #]`: Changes the color of the semi-transparent mask.
 
 Example usage:
 

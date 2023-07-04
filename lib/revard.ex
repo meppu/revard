@@ -19,7 +19,7 @@ defmodule Revard do
       # Finch
       {Finch, name: Revard.Finch},
       # PubSub
-      {Phoenix.PubSub, keys: :unique, name: Revard.PubSub},
+      {Phoenix.PubSub, name: Revard.PubSub},
       # Revolt bot
       {Revard.Bot.Listener, Application.get_env(:revard, :revolt_websocket)},
       # Revolt pinger
