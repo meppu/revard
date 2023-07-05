@@ -28,5 +28,8 @@ revard-*.tar
 # Elixir LS
 /.elixir_ls/
 
-# dotEnv
+# Environment
 .env
+
+# Priv
+/priv/

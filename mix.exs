@@ -7,11 +7,11 @@ defmodule Revard.MixProject do
       version: "0.5.4",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      dialyzer: dialyxir()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger],
@@ -19,7 +19,6 @@ defmodule Revard.MixProject do
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:websockex, "~> 0.4.3"},
@@ -31,7 +30,15 @@ defmodule Revard.MixProject do
       {:finch, "~> 0.16.0"},
       {:castore, "~> 1.0"},
       {:mongodb_driver, "~> 1.0"},
-      {:phoenix_pubsub, "~> 2.1"}
+      {:phoenix_pubsub, "~> 2.1"},
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
+    ]
+  end
+
+  defp dialyxir do
+    [
+      plt_local_path: "priv/plts/project",
+      plt_core_path: "priv/plts/core"
     ]
   end
 end
