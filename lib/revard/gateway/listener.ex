@@ -86,6 +86,11 @@ defmodule Revard.Gateway.Listener do
     end
   end
 
+  defp match_message(%{"event" => "list"}, state) do
+    message = {:text, Jason.encode!(state)}
+    {:reply, :ok, message, state}
+  end
+
   defp match_message(_message, state) do
     invalid_payload_error(state)
   end
