@@ -20,6 +20,7 @@ Revard is a basic implementation of [Lanyard](https://github.com/Phineas/lanyard
     - [Avatar Endpoint](#avatar-endpoint)
     - [Background Endpoint](#background-endpoint)
   - [WebSocket](#websocket)
+    - [Retrieve Subscribed User List](#retrieve-subscribed-user-list)
   - [Card](#card)
     - [Card Options](#card-options)
   - [Self-hosting](#self-hosting)
@@ -85,8 +86,6 @@ Returns the background image of the specified user. (It actually redirects 🤓)
 
 > Check out [this file](https://github.com/meppu/website/blob/main/js/index.js) for an example of WebSocket usage.
 
-Revard's WebSocket functionality is designed to be simpler than that of Lanyard.
-
 You can establish a WebSocket connection by using the `/gateway` endpoint. Revard uses JSON for sending and receiving data.
 
 After connecting, you need to send a ping every 30 seconds. You can accomplish this by sending a `ping` frame or by simply sending the following data:
@@ -109,6 +108,20 @@ By doing so, you will receive real-time updates for the specified users within t
 To update subscribers, resend the same data with the updated `ids` value.
 
 > ⚠️ Starting from version `0.5.4`, The capability to monitor all members on the server has been removed as a precautionary measure against potential misuse.
+
+### Retrieve Subscribed User List
+
+> ⚠️ This feature has been introduced in version `0.6.0`.
+
+The `list` event is utilized to request the list of users who have subscribed. Once the server receives this message, it responds with a message that includes the list of currently subscribed users.
+
+The format of the message is as follows:
+
+```json
+{ "event": "list" }
+```
+
+The response message will provide the desired list of subscribed users.
 
 ## Card
 
