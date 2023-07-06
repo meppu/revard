@@ -10,6 +10,11 @@ defmodule Revard.Router do
   plug :match
   plug :dispatch
 
+  ## Redirect to README
+  get "/" do
+    Utils.redirect(conn, "https://github.com/meppu/revard/blob/main/README.md")
+  end
+
   ## Redirect to Revolt server
   get "/invite" do
     Utils.redirect(conn, Application.get_env(:revard, :invite_url))
