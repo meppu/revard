@@ -130,6 +130,7 @@ With the new update, Revard now has the capability to render an SVG card for you
 The endpoint for the card is available at `/card/:id`. For example:
 
 - `https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX`
+  
   ![card](https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX)
 
 ### Card Options
