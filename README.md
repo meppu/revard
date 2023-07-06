@@ -33,7 +33,7 @@ Revard is a basic implementation of [Lanyard](https://github.com/Phineas/lanyard
 
 Revard empowers you to effortlessly expose and monitor your Revolt activities.
 
-An instance is currently running at `revard.meppu.boo`. Before using it, you must join [this server](https://revard.meppu.boo/).
+An instance is currently running at `revard.meppu.boo`. Before using it, you must join [this server](https://revard.meppu.boo/invite).
 
 ## REST API
 

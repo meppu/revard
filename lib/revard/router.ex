@@ -11,7 +11,7 @@ defmodule Revard.Router do
   plug :dispatch
 
   ## Redirect to Revolt server
-  get "/" do
+  get "/invite" do
     Utils.redirect(conn, Application.get_env(:revard, :invite_url))
   end
 
