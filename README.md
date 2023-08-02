@@ -130,7 +130,7 @@ With the new update, Revard now has the capability to render an SVG card for you
 The endpoint for the card is available at `/card/:id`. For example:
 
 - `https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX`
-  
+
   ![card](https://revard.meppu.boo/card/01F6YN5JWMHJFKPDZVYB6434HX)
 
 ### Card Options
@@ -165,8 +165,8 @@ Before running the bot, you must set the following environment variables:
 
 Additionally, if you are using this bot for another Revolt host, you need to set these special environment variables:
 
-- `REVOLT_WEBSOCKET`: Revolt WebSocket URL. The default is "wss://ws.revolt.chat".
-- `REVOLT_API`: Revolt API URL. The default is "https://api.revolt.chat".
+- `REVOLT_WEBSOCKET`: Revolt WebSocket URL. The default is "wss://app.revolt.chat/events".
+- `REVOLT_API`: Revolt API URL. The default is "https://app.revolt.chat/api".
 - `AUTUMN_URL`: Autumn (Revolt CDN) URL. The default is "https://autumn.revolt.chat".
 
 ### Docker
