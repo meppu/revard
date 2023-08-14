@@ -2,6 +2,7 @@ defmodule Revard.Card.Badges do
   @moduledoc """
   Hardcoded minified SVGs as base64 for Revard cards
   """
+
   def svg("developer") do
     "PHN2ZyBmaWxsPSJub25lIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDM0MyAzNDMiPjxwYXRoIGQ9Im0zMDUuNiA4Ny4yLTU4IDU4LjEtNTMtNTIuOCA1OC4yLTU4LjJBOTcuMSA5Ny4xIDAgMCAwIDEyNiAxNjEuMkwzMi4yIDI1NWExNSAxNSAwIDAgMCAwIDIxLjFsMzEuNyAzMS43YTE1IDE1IDAgMCAwIDIxLjEgMGw5My44LTkzLjhBOTcuMiA5Ny4yIDAgMCAwIDMwNS42IDg3LjJ6IiBmaWxsPSIjOTlhYWI1IiBzdHJva2Utd2lkdGg9IjEuNCIvPjwvc3ZnPg=="
   end

@@ -60,10 +60,23 @@ defmodule Revard.Card.Renderer do
                 margin-right: 20px;
                 border: 4px solid #{get_status_color(user_data)};
                 border-radius: 50%;" src="data:image/png;base64,#{avatar_base64}"/>
-            <div>
-              <h3 style="margin-bottom: 2px; color: #fff">#{Utils.encode_string(user_data["display_name"] || username, 18)}</h3>
-              <h4 style="margin-top: 0; #{if(length(badges) > 0, do: "margin-bottom: 6px;", else: "")} color: #ffffffcc">
-                #{Utils.encode_string(username, 18)}##{discriminator}
+            <div style="max-width: 250px;">
+              <h3 style="
+                margin-bottom: 2px;
+                color: #fff;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;">
+                #{Utils.encode_string(user_data["display_name"] || username)}
+              </h3>
+              <h4 style="
+                margin-top: 0;
+                #{if(length(badges) > 0, do: "margin-bottom: 6px;", else: "")}
+                color: #ffffffcc;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;">
+                #{Utils.encode_string(username)}##{discriminator}
               </h4>
               <div style="
                   display: #{if(length(badges) > 0, do: "inline-block", else: "none")};
@@ -118,7 +131,7 @@ defmodule Revard.Card.Renderer do
     <div style="
       height: 50px;
       background: ##{mask_color}dd;
-      border-top: 1px solid #ffffff33;
+      box-shadow: 0 1px 0 #ffffff33 inset;
       font-weight: 600;
       color: #ffffffaa;
       border-bottom-right-radius: 12px;
@@ -126,7 +139,13 @@ defmodule Revard.Card.Renderer do
       display: flex;
       align-items: center;
       justify-content: center;">
-        #{Utils.encode_string(status_text, 30)}
+        <p style="
+          padding: 0 1rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;">
+          #{Utils.encode_string(status_text)}
+        </p>
     </div>
     """
   end

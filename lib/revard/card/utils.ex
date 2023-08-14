@@ -3,12 +3,8 @@ defmodule Revard.Card.Utils do
   Card render utilities
   """
 
-  def encode_string(value, max_length) do
-    if String.length(value) > max_length do
-      String.slice(value, 0..(max_length - 4)) <> "..."
-    else
-      value
-    end
+  def encode_string(value) do
+    value
     |> String.to_charlist()
     |> Enum.map(&"&##{&1};")
     |> Enum.join()
