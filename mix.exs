@@ -4,7 +4,7 @@ defmodule Revard.MixProject do
   def project do
     [
       app: :revard,
-      version: "0.6.0",
+      version: "0.6.1",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -24,12 +24,12 @@ defmodule Revard.MixProject do
       {:websockex, "~> 0.4.3"},
       {:jason, "~> 1.4"},
       {:plug, "~> 1.14"},
-      {:bandit, "~> 1.0.0-pre.10"},
+      {:bandit, "~> 1.0.0-pre.12"},
       {:websock_adapter, "~> 0.5.3"},
-      {:corsica, "~> 2.0"},
+      {:corsica, "~> 2.1"},
       {:finch, "~> 0.16.0"},
       {:castore, "~> 1.0"},
-      {:mongodb_driver, "~> 1.0"},
+      {:mongodb_driver, "~> 1.1"},
       {:phoenix_pubsub, "~> 2.1"},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
     ]
